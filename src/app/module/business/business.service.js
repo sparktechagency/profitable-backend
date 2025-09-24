@@ -258,8 +258,8 @@ export const getAllBusinessService = async () => {
 }
 
 //get a single business by id with interested users
-export const getASingleBusinessByIdWithUsersService = async (userDetails,query) => {
-    const currentUserId = userDetails.userId;
+export const getASingleBusinessByIdWithUsersService = async (query) => {
+    // const currentUserId = userDetails.userId;
     const {businessId} = query;
     // console.log(businessId);
     
@@ -273,8 +273,12 @@ export const getASingleBusinessByIdWithUsersService = async (userDetails,query) 
     
     const business = await BusinessModel.findById(businessId);
 
+     if(!business){
+        throw new ApiError(500, "No business details found");
+    }
+
     //increment views by 1 if 
-    if (business.user?._id.toString() !== currentUserId.toString()) {
+    // if (business.user?._id.toString() !== currentUserId.toString()) {
         // await BusinessModel.findByIdAndUpdate(
         //     businessId,
         //     { $inc: { views: 1 } },
@@ -282,12 +286,7 @@ export const getASingleBusinessByIdWithUsersService = async (userDetails,query) 
         // );
         business.views = business.views + 1;
         await business.save();
-    }
-
-
-    if(!business){
-        throw new ApiError(500, "No business details found");
-    }
+    // }
 
     
     //find out all users who are interested to this business

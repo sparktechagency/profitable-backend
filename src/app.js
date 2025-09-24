@@ -9,12 +9,16 @@ import NotFoundHandler from "./error/NotFoundHandler.js";
 import allRouter from "./app/routes/routes.js";
 import webhookRouter from "./app/module/payment/webhook.routes.js";
 import { detectCountry } from "./app/middleware/selectCountryMiddleware.js";
+import { redirectUrl } from "./app/middleware/redirect.js";
 
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+//redirect url middleware
+app.use(redirectUrl);
 
 //to get/retrieve upload folder image
 // app.use('/uploads', express.static('uploads'));
@@ -32,6 +36,9 @@ app.use(cors());
 //auto detect country while loading
 // app.use(detectCountry);
 // app.set("trust proxy", true);
+
+//redirect url middleware
+app.use(redirectUrl);
 
 //to get/retrieve upload folder image
 app.use('/uploads', express.static('uploads'));

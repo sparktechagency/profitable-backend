@@ -43,7 +43,7 @@ export const getAllBusiness = catchAsync(async (req,res) => {
 
 //api ending point to get a single business
 export const getASingleBusinessWithusers = catchAsync(async (req,res) => {
-    const response = await getASingleBusinessByIdWithUsersService(req.user,req.query);
+    const response = await getASingleBusinessByIdWithUsersService(req.query);
 
     sendResponse(res,{
         statusCode: 200,

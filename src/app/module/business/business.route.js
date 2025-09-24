@@ -33,7 +33,7 @@ var upload = multer({
   storage: storage,
 
   limits: {
-    fileSize: 5000000, // 5MB . less than 5mb file allowed
+    fileSize: 1024*1024*5, // 5MB . less than 5mb file allowed
   },
 
   fileFilter: (req, file, cb) => {
@@ -78,7 +78,7 @@ businessRouter.get("/single-business", getASingleBusinessDetails);
 
 businessRouter.delete("/delete-business", deleteBusiness);
 
-businessRouter.get("/get-single-business-with-users",authorizeUser, getASingleBusinessWithusers);
+businessRouter.get("/get-single-business-with-users", getASingleBusinessWithusers);
 
 businessRouter.get("/interested-buyers-details", interestedBuyersDetails);
 
