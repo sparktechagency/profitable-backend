@@ -222,7 +222,7 @@ export const updateCategory = catchAsync(
         }
 
         const response = await CategoryModel.findByIdAndUpdate(categoryId,{
-            categoryName,categoryImage: imageName},
+            categoryName: categoryName,categoryImage: imageName},
             { new: true });
 
         sendResponse(res,{

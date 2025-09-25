@@ -1,4 +1,4 @@
-import mongoosePkg from 'mongoose';
+// import mongoosePkg from 'mongoose';
 import config from "../../config/index.js";
 import handleValidationError from "../../error/handleValidationError.js";
 import handleCastError from "../../error/handleCastError.js";
@@ -10,7 +10,7 @@ import { MulterError } from "multer";
 import { errorLogger } from "../../utils/logger.js";
 
 const { JsonWebTokenError, TokenExpiredError } = pkg;
-const {  mongooseError } = mongoosePkg;
+// const {  mongooseError } = mongoosePkg;
 
 const globalErrorHandler = (error, req, res, next) => {
   const logError = config.env === "development" ? console.log : console.error;
@@ -84,7 +84,7 @@ const globalErrorHandler = (error, req, res, next) => {
     (error instanceof ApiError && errorHandlers.ApiError) ||
     (error.code === 11000 && errorHandlers.DuplicateKeyError) ||
     (error instanceof TypeError && errorHandlers.TypeError) ||
-    (error instanceof mongooseError && errorHandlers.mongooseError) ||
+    // (error instanceof mongooseError && errorHandlers.mongooseError) ||
     (error instanceof MulterError && errorHandlers.MulterError);
 
   if (errorType) {
