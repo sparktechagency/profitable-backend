@@ -16,6 +16,7 @@ const businessSchema = new mongoose.Schema({
         type: String,
         required: [true, "Business title is required"]
     },
+    //
     businessRole:{
         type: String,
         required: [true, "business role is required"],
