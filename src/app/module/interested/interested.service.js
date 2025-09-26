@@ -57,7 +57,7 @@ export const makeAnUserInterestedService = async (req) => {
         console.log("Email sent for buyer enquery");
     }else if(seller.user.subscriptionPlan && seller.user.subscriptionPlanPrice === 0){
 
-        sendBuyersEnquiryEmail(seller.user.email,{sellerName: seller.user.name});
+        sendBuyersEnquiryEmail(seller.user.email,{sellerName: seller.user.name,businessTitle: null});
         console.log("Email sent for buyer enquery");
     }
 

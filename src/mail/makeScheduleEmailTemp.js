@@ -1,4 +1,4 @@
-const changePasswordConfirmationTemp = (data) =>
+const makeScheduleEmail = (data) =>
   ` 
     <html>
       <head>
@@ -65,20 +65,24 @@ const changePasswordConfirmationTemp = (data) =>
           }
         </style>
       </head>
-
       <body>
         <div class="container">
           
           <p>Hello, ${data.name}</p>
-          <p>This is a confirmation that your password for ProfitableBusinessesForSale.com was successfully updated.  </p>
-          <p> If you did not make this change, please reset your password immediately and contact our support team. </p>
+          <p>You have scheduled a new meeting with PBFS </p>
+
+          <h3>Date: ${data.date}</h3>
+          <h3>Time: ${data.time}</h3>
+          <h3>Timezone: ${data.timeZone}</h3>
+          <h3>Topic: ${data.topic}</h3>
           
-          <p><a href="https://profitablebusinessesforsale.com/">Reset Password</a></p>
+          <p>Please make sure to attend on time</p>
+          
           <p>Best Regards,<br>Team PBFS</p>
         </div>
         <div class="footer">
-         <a href="https://profitablebusinessesforsale.com/"><img src="https://pbfsimage.s3.eu-north-1.amazonaws.com/Pbfs_logo.png" class="logo-img"/></a>
-        <p> <a href="https://profitablebusinessesforsale.com/">ProfitableBusinessesForSale.com</a> | <a href="info@ProfitableBusinessesForSale.com">info@ProfitableBusinessesForSale.com</a>.</p>
+          <a href="https://profitablebusinessesforsale.com/"><img src="https://pbfsimage.s3.eu-north-1.amazonaws.com/Pbfs_logo.png" class="logo-img"/></a>
+          <p> <a href="https://profitablebusinessesforsale.com/">ProfitableBusinessesForSale.com</a> | <a href="info@ProfitableBusinessesForSale.com">info@ProfitableBusinessesForSale.com</a>.</p>
           <p> Follow Us on 
             <a href="https://www.facebook.com/share/1J7PbBaf1G/?mibextid=wwXIfr">Facebook</a> |
 
@@ -89,6 +93,6 @@ const changePasswordConfirmationTemp = (data) =>
     </html>
   `;
 
-export default changePasswordConfirmationTemp;
+export default makeScheduleEmail;
 
-//  <-- <a href="https://profitablebusinessesforsale.com/"><img src="uploads/logo/pbfs-logo.png" alt="PBFS" class="logo-img"/></a> -->
+// <-- <a href="https://profitablebusinessesforsale.com/"><img src="uploads/logo/pbfs-logo.png" alt="PBFS" class="logo-img"/></a> -->

@@ -14,6 +14,7 @@ import welcomeEmailTemp from "../mail/welcomeEmailTemp.js";
 import listigConfirmationEmailTemp from "../mail/listingConfirmationTemp.js";
 import changePasswordConfirmationTemp from "../mail/changePasswordTemp.js";
 import newMessageEmailTemp from "../mail/newMesssageTemp.js";
+import makeScheduleEmail from "../mail/makeScheduleEmailTemp.js";
 
 
 
@@ -181,6 +182,19 @@ export const sendNewMessageEmail = async (email,data) => {
       email,
       subject: "You Have a New Message on PBFS ",
       html: newMessageEmailTemp(data),
+    });
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(status.INTERNAL_SERVER_ERROR, error.message);
+  }
+};
+
+export const sendMakeScheduleEmail = async (email,data) => {
+  try {
+    await sendEmail({
+      email,
+      subject: "You scheduled a new meeting with PBFS ",
+      html: makeScheduleEmail(data),
     });
   } catch (error) {
     console.log(error);

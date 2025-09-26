@@ -1,4 +1,5 @@
 import ApiError from "../../../error/ApiError.js";
+import { sendMakeScheduleEmail } from "../../../utils/emailHelpers.js";
 import postNotification from "../../../utils/postNotification.js";
 import validateFields from "../../../utils/validateFields.js";
 import ScheduleModel from "./schedule.model.js";
@@ -8,9 +9,13 @@ import ScheduleModel from "./schedule.model.js";
 export const makeAMeetingScheduleService = async (payload) => {
     const {userId, name,email,date,time,timeZone,topic,note} = payload;
 
+    if(!userId){
+        throw new ApiError(400,"You have to log in first to make a meeting schedule");
+    }
+
     //validate all the fields are available or not
     validateFields(payload,[
-        "userId","name","email","date","time","timeZone","topic"
+        "name","email","date","time","timeZone","topic"
     ]);
 
     //now make a new schedule 
@@ -27,7 +32,10 @@ export const makeAMeetingScheduleService = async (payload) => {
     //that one user scheduled a meeting
     // const meetingDate = date.getDate();
     await postNotification("New Meeting Scheduled",`${name} scheduled a meeting at ${time} on ${date}`);
+    await postNotification("New Meeting Scheduled",`You scheduled a meeting with PBFS at ${time} on ${date}`,userId);
 
+    //send Email to user
+    sendMakeScheduleEmail(email,{name,date,time,timeZone,topic});
     return newSchedule;
 }
 

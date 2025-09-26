@@ -91,14 +91,14 @@ export const createNewBusinessService = async (req) => {
         await user.save();
 
         //send notification to admin and user
-        postNotification("New Listing Request",`${user.name} submitted a new business: ${title}`);
+        postNotification("New Listing Request",`${user.name} listed a new business: ${title}`);
         postNotification('Your business listed successfully','Now wait for admins approval', user._id);
 
         return newBusiness;
     }
 
     //Seller add business
-    if(role === "Seller" || role === "Asset Seller"){
+    if(role === "Seller"){
 
         if(subscriptionPlanType){
 
@@ -110,33 +110,33 @@ export const createNewBusinessService = async (req) => {
         }
         
     }
-    // else if(role === "Asset Seller") {
+    else if(role === "Asset Seller") {
 
-    //      if(subscriptionPlanType === "1 Months"){
+         if(subscriptionPlanType === "1 Months"){
 
-    //         //check if user can add new business or not
-    //         if(businessCount >= 1) throw new ApiError(400, "1 month subscription plan user can't add more than 1 business");
+            //check if user can add new business or not
+            if(businessCount >= 1) throw new ApiError(400, "1 month subscription plan user can't add more than 1 business");
 
-    //         await addNewBusiness();
+            await addNewBusiness();
 
-    //      }
-    //     else if(subscriptionPlanType === "3 Months"){
+         }
+        else if(subscriptionPlanType === "3 Months"){
 
-    //         //check if user can add new business or not
-    //          if(businessCount >= 3) throw new ApiError(400, "3 Months subscription plan user can't add more than 3 business");
+            //check if user can add new business or not
+             if(businessCount >= 3) throw new ApiError(400, "3 Months subscription plan user can't add more than 3 business");
 
-    //          await addNewBusiness();
+             await addNewBusiness();
 
-    //     }
-    //     else if(subscriptionPlanType === "6 Months"){
+        }
+        else if(subscriptionPlanType === "6 Months"){
 
-    //         //check if user can add new business or not
-    //          if(businessCount >= 5) throw new ApiError(400, "6 Month subscriptiopn plan user can't add more than 5 business");
+            //check if user can add new business or not
+             if(businessCount >= 5) throw new ApiError(400, "6 Month subscriptiopn plan user can't add more than 5 business");
 
-    //          await addNewBusiness();
+             await addNewBusiness();
 
-    //     }
-    // }
+        }
+    }
     else if(role === "Business Idea Lister"){
         //for Business Idea lister there is no limitation to add new Business
         await addNewBusiness();

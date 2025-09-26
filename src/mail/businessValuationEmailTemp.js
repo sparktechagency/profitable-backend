@@ -78,6 +78,7 @@ const businessValuationEmailTemp = (data) =>
           <p>Best Regards,<br>Team PBFS</p>
         </div>
         <div class="footer">
+         <a href="https://profitablebusinessesforsale.com/"><img src="https://pbfsimage.s3.eu-north-1.amazonaws.com/Pbfs_logo.png" class="logo-img"/></a>
          
         <p> <a href="https://profitablebusinessesforsale.com/">ProfitableBusinessesForSale.com</a> | <a href="info@ProfitableBusinessesForSale.com">info@ProfitableBusinessesForSale.com</a>.</p>
           <p> Follow Us on 

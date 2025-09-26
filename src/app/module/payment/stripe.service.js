@@ -32,10 +32,10 @@ const getEndDate = (duration) => {
       return new Date(new Date().setMonth(new Date().getMonth() + 1)); //  first hour of next month
 
     case "3 Months":
-      return new Date(new Date().setMonth(new Date().getMonth() + 3));; // first hour of next year
+      return new Date(new Date().setMonth(new Date().getMonth() + 3)); // first hour of next year
 
     case "6 Months":
-      return new Date(new Date().setMonth(new Date().getMonth() + 6));; // first hour of next year
+      return new Date(new Date().setMonth(new Date().getMonth() + 6)); // first hour of next year
 
     default:
       throw new ApiError(400, "Invalid duration");
@@ -215,11 +215,28 @@ export const postCheckoutService = async (userData, payload) => {
     const payment = await PaymentModel.create(paymentData);
     if(!payment) throw new ApiError(500," Failed to create new Payment");
 
-    await UserModel.findByIdAndUpdate(userId,{
-      subscriptionPlan: subscriptionId, subscriptionPlanPrice: 0, subscriptionPlanType: duration, subscriptionStartDate,subscriptionEndDate
-    });
+    const user = await UserModel.findByIdAndUpdate(userId,{
+      subscriptionPlan: subscriptionId, subscriptionPlanPrice: 0, subscriptionPlanType: "Free Plan", subscriptionStartDate,subscriptionEndDate
+    },{new: true}).select("name email");
 
-    return 'http://10.10.20.60:3005/payment-successfull';
+    //get user detail
+    // const user = await UserModel.findById(userId).select("name email").lean();
+
+    // send email to user
+    const emailData = {
+      name: user.name,
+      subscriptionPlan: "Free Plan",
+      price: 0,
+      currency: "USD",
+      startDate: subscriptionStartDate,
+      endDate: subscriptionEndDate,
+      // payment_intent_id: payment_intent,
+    };
+
+    //send mail to user with payment details
+    sendSubscriptionEmail(user.email, emailData);
+
+    return 'https://profitablebusinessesforsale.com/payment-successfull';
   }
 
   //get the amount in bdt and convert it to dollar
@@ -264,8 +281,8 @@ export const postCheckoutService = async (userData, payload) => {
   const sessionData = {
     payment_method_types: ["card"],
     mode: "payment",
-    success_url: `http://10.10.20.60:3005/payment-successfull`,
-    cancel_url: `http://10.10.20.60:3005/Error-payment`,
+    success_url: `https://profitablebusinessesforsale.com/payment-successfull`,
+    cancel_url: `https://profitablebusinessesforsale.com/Error-payment`,
     line_items: [
       {
         price_data: {
