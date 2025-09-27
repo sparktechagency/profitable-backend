@@ -178,7 +178,7 @@ export const postCheckoutService = async (userData, payload) => {
 
   validateFields(payload, ["subscriptionId","price","duration"]);
   const priceNumber = Number(price);
-  // console.log(price);
+  console.log(price);
 
   let subscriptionPlan;
   if(role === "Broker"){
@@ -273,6 +273,47 @@ export const postCheckoutService = async (userData, payload) => {
       await coupon.save();
 
   }
+  console.log(amountInCents);
+
+  //if user prefer a free plan
+  if(amountInCents == 0){
+
+    //check if user has already used Free plan or not
+    const freePlan = await PaymentModel.findOne({user: userId, amount: 0});
+    if(freePlan) throw new ApiError(403,"Already you have used free plan. You can't use it for twice");
+
+    const paymentData = {
+      user: userId, amount: 0,duration,checkout_session_id: `FREE-${uuidv4()}`,subscriptionPlan: subscriptionPlan._id,
+      status: "Paid", subscriptionStatus: "Active", subscriptionStartDate, subscriptionEndDate,
+    };
+
+    const payment = await PaymentModel.create(paymentData);
+    if(!payment) throw new ApiError(500," Failed to create new Payment");
+
+    const user = await UserModel.findByIdAndUpdate(userId,{
+      subscriptionPlan: subscriptionId, subscriptionPlanPrice: 0, subscriptionPlanType: "Free Plan", subscriptionStartDate,subscriptionEndDate
+    },{new: true}).select("name email");
+
+    //get user detail
+    // const user = await UserModel.findById(userId).select("name email").lean();
+
+    // send email to user
+    const emailData = {
+      name: user.name,
+      subscriptionPlan: "Free Plan",
+      price: 0,
+      currency: "USD",
+      startDate: subscriptionStartDate,
+      endDate: subscriptionEndDate,
+      // payment_intent_id: payment_intent,
+    };
+
+    //send mail to user with payment details
+    sendSubscriptionEmail(user.email, emailData);
+
+    return 'https://profitablebusinessesforsale.com/payment-successfull';
+  }
+
   //complete payment using stripe
   let session = {};
   // const amountInCents = Math.ceil( subscriptionPlan.price.toFixed(2) * 100 );

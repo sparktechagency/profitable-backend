@@ -15,6 +15,7 @@ import listigConfirmationEmailTemp from "../mail/listingConfirmationTemp.js";
 import changePasswordConfirmationTemp from "../mail/changePasswordTemp.js";
 import newMessageEmailTemp from "../mail/newMesssageTemp.js";
 import makeScheduleEmail from "../mail/makeScheduleEmailTemp.js";
+import adminEmailTemp from "../mail/addAdminEmailTemp.js";
 
 
 
@@ -72,12 +73,12 @@ export const sendOtpResendEmail = async (email, data) => {
 
 
 
-export const sendAddAdminEmailTemp = async (email, data) => {
+export const sendAdminEmail = async (email, data) => {
   try {
     await sendEmail({
       email,
-      subject: "Admin Account Created",
-      html: addAdminEmailTemp(data),
+      subject: "New business listed on PBFS - Review Now",
+      html: adminEmailTemp(data),
     });
   } catch (error) {
     console.log(error);

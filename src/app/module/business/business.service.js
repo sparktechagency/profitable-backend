@@ -11,7 +11,7 @@ import UserModel from "../user/user.model.js";
 import postNotification from "../../../utils/postNotification.js";
 import QueryBuilder from "../../../builder/queryBuilder.js";
 import deleteFile from "../../../utils/deleteUnlinkFile.js";
-import { newBusinessListingEmail,businessValuationReturnEmail } from "../../../utils/emailHelpers.js";
+import { newBusinessListingEmail,businessValuationReturnEmail, sendAdminEmail } from "../../../utils/emailHelpers.js";
 
 
 
@@ -185,7 +185,7 @@ export const createNewBusinessService = async (req) => {
 
     //send notification to all buyer and investor that a new business listed
     if(newBusiness){
-        
+        sendAdminEmail(config.smtp.smtp_mail,{name: "Admin", title: newBusiness.title, category: newBusiness.category,country: newBusiness.country});
         sendNotificationToAllBuyerAndInvestor(title,countryName,businessType,role);
     }
 }

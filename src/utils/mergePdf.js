@@ -121,6 +121,9 @@ async function generateNDAPdf(ndaText) {
 
 //main function
 async function createNDAFile(user,role, files) {
+  // replace spaces with underscores
+  const safeName = user.name.replace(/\s+/g, "_");
+
   //select ndaText
   let ndaText;
   switch(role){
@@ -159,10 +162,9 @@ async function createNDAFile(user,role, files) {
     const copiedPages = await pdfDoc.copyPages(existingPdf, existingPdf.getPageIndices());
     copiedPages.forEach((p) => pdfDoc.addPage(p));
   }
-  
 
   const finalPdfBytes = await pdfDoc.save();
-  const outputPath = `uploads/NDA/nda-${user.name}-${Date.now()}.pdf`;
+  const outputPath = `uploads/NDA/nda-${safeName}-${Date.now()}.pdf`;
 
   fs.writeFileSync(outputPath, finalPdfBytes);
 
