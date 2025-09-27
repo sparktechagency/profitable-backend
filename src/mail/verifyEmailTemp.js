@@ -67,9 +67,9 @@ const verifyEmailTemp = (data) => `
      
     <body>
       <div class="container">
-        <h1>Welcome to Profitable Business</h1>
+        <h1>Welcome to PBFS!</h1>
         <p>Hello, ${data.name}</p>
-        <p>Thank you for registering with Profitable Business. To verify your email and secure your account, please use the one-time password (OTP) below:</p>
+        <p>Thank you for registering with Profitable Business For Sale. To verify your email and secure your account, please use the one-time password (OTP) below:</p>
         <h3>Your Otp: ${data.code}</h3>
         <p>This code will expire in 10 minutes. If you didnt request this, please ignore this email.</p>
         
@@ -77,6 +77,7 @@ const verifyEmailTemp = (data) => `
       </div>
       <div class="footer">
         <a href="https://profitablebusinessesforsale.com/"><img src="https://pbfsimage.s3.eu-north-1.amazonaws.com/Pbfs_logo.png" class="logo-img"/></a>
+        
        <p> <a href="https://profitablebusinessesforsale.com/">ProfitableBusinessesForSale.com</a> | <a href="info@ProfitableBusinessesForSale.com">info@ProfitableBusinessesForSale.com</a>.</p>
         <p> Follow Us on 
           <a href="https://www.facebook.com/share/1J7PbBaf1G/?mibextid=wwXIfr">Facebook</a> |

@@ -66,17 +66,27 @@ export const helpAndSupportController = catchAsync(
             from: `Profitable Business <${config.smtp.smtp_mail}>`,
             to: config.smtp.smtp_mail,
             subject: 'Help and Suport',
-            text: `Hi This is ${firstName ? firstName : "NA"},\n\n
-                I am facing an Issue:\n\n
-                Message : ${message ? message : "NA"}\n\n
-                Name: ${firstName ? firstName : "NA"} ${lastName ? lastName : "NA"}\n
-                Email: ${email ? email : "NA"}\n
-                Phone : ${phone ? phone : "NA"}\n\n
+            text: `Hello Admin,
 
-                You please take necessery steps to solve the issue.\n
-                Thank You.
-                
+                This is ${firstName ? firstName : "NA"}.
+
+                I am reaching out to report an issue I am currently facing. Please find the details below:
+
+                Issue Message: ${message ? message : "NA"}
+
+                User Details:
+                - Name  : ${firstName ? firstName : "NA"} ${lastName ? lastName : "NA"}
+                - Email : ${email ? email : "NA"}
+                - Phone : ${phone ? phone : "NA"}
+
+                I kindly request you to look into this matter and take the necessary steps to resolve the issue at the earliest.
+
+                Thank you for your support.
+
+                Best regards,  
+                ${firstName ? firstName : "NA"}
                 `
+
             };
     
             // Send email

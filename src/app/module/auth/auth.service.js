@@ -227,7 +227,7 @@ export const forgetPasswordService = async (payload) => {
     }
 
     //generate code for 3 minutes
-    const {code , expiredAt  } = codeGenerator(3);
+    const {code , expiredAt  } = codeGenerator(10);
 
     //save otp code and code expiary time in user
     user.verificationCode = code;

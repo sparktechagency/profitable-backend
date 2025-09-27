@@ -79,7 +79,7 @@ Team PBFS
         <div class="container">
           
           <p>Hello, ${data.name}</p>
-          <p>You’ve received a new reply from [Sender Name] on PBFS.  </p>
+          <p>You’ve received a new message from ${data.user} on PBFS.  </p>
           <p> View Message & Respond</p>
           
           <p>Stay engaged - quick replies lead to stronger business connections.</p>
