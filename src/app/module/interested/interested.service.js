@@ -15,7 +15,7 @@ export const makeAnUserInterestedService = async (req) => {
     // console.log(req.body);
 
     //check if all the fields are available
-    validateFields(req.body,["businessId","userId","name","email","businessRole"]);
+    validateFields(req.body,["businessId","name","email","businessRole"]);
 
     const business = await BusinessModel.findById(businessId).select("title businessRole").lean();
 
@@ -32,7 +32,7 @@ export const makeAnUserInterestedService = async (req) => {
     } 
 
     const newInterestedUser = await InterestedModel.create({
-        businessId,userId,businessRole,userRole: role,name,countryCode,mobile,sector,activity,email,serviceZone,message
+        businessId,userId: req.user.userId,businessRole,userRole: role,name,countryCode,mobile,sector,activity,email,serviceZone,message
     });
 
     if(!newInterestedUser){
