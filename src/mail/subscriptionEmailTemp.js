@@ -73,6 +73,8 @@ const subscriptionEmailTemp = (data) =>
           <p>Thank you for subscribing to ProfitableBusinessesForSale.com! <br> 
             Your subscription plan has been successfully activated. </p>
           <h3>Plan : ${data.subscriptionPlan}</h3>
+          <h3>Price : $ ${data.price}</h3>
+
           <h3>Start Date: ${data.startDate}</h3>
           <h3>End Date: ${data.endDate}</h3>
           <p>You can now enjoy full access to premium features.</p>

@@ -24,10 +24,20 @@ const sendNotificationToAllBuyerAndInvestor = async (title,country,businessType,
     
         //now send notification to all buyer and investor
         if(users.length > 0){
-            users?.map( (user) => {
-                postNotification("Latest listed Business",`Business Idea: ${title},location: ${country},`,user._id);
-                newBusinessListingEmail(user.email,{name: user.name, title,country,businessType});
-            });
+            for (const user of users) {
+                postNotification(
+                    "Latest listed Idea",
+                    `Business Idea: ${title}, location: ${country},`,
+                    user._id
+                );
+                await newBusinessListingEmail(user.email, {
+                    name: user.name,
+                    title,
+                    country,
+                    businessType
+                });
+            }
+
         }
     }
     else {
@@ -36,10 +46,20 @@ const sendNotificationToAllBuyerAndInvestor = async (title,country,businessType,
     
         //now send notification to all buyer and investor
         if(users.length > 0){
-            users?.map( (user) => {
-                postNotification("Latest listed Business",`Business name: ${title},location: ${country},`,user._id);
-                newBusinessListingEmail(user.email,{name: user.name, title,country,businessType});
-            });
+            for (const user of users ) {
+                postNotification(
+                    "Latest listed Business",
+                    `Business : ${title}, location: ${country},`,
+                    user._id
+                );
+                await newBusinessListingEmail(user.email, {
+                    name: user.name,
+                    title,
+                    country,
+                    businessType
+                });
+            }
+
         }
     }
 }
@@ -185,7 +205,10 @@ export const createNewBusinessService = async (req) => {
 
     //send notification to all buyer and investor that a new business listed
     if(newBusiness){
-        sendAdminEmail(config.smtp.smtp_mail,{name: "Admin", title: newBusiness.title, category: newBusiness.category,country: newBusiness.country});
+        //send email to admin also
+        await sendAdminEmail(config.smtp.smtp_mail,{name: "Admin", title: newBusiness.title, category: newBusiness.category,country: newBusiness.countryName});
+
+        //send email to all buyer and investor
         sendNotificationToAllBuyerAndInvestor(title,countryName,businessType,role);
     }
 }
@@ -538,7 +561,7 @@ export const getBusinessValuationService = async (req) => {
     }
 
     //send email to user that his info has sent to admin
-    businessValuationReturnEmail(email, {name: ownerName});
+    await businessValuationReturnEmail(email, {name: ownerName});
 
 }
 

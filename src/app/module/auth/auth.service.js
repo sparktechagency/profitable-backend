@@ -71,7 +71,7 @@ export const userRegistrationProcess = async (payload) => {
     };
 
     //send email to user
-    sendEmailVerifyEmail(email,data);
+    await sendEmailVerifyEmail(email,data);
         
              
     return {
@@ -206,7 +206,7 @@ export const verifyEmailVerifyOtpService = async (payload) => {
     //post notification to admin
     postNotification("New User Joined",`${user.name} has joined the platform`);
     //send welcome email to user
-    sendWelcomeEmail(user.email,{name: user.name});
+    await sendWelcomeEmail(user.email,{name: user.name});
 
     return {verifiedUser, accessToken};
 }
@@ -242,7 +242,7 @@ export const forgetPasswordService = async (payload) => {
     };
 
     //send email to user
-    sendResetPasswordEmail(email,data);
+    await sendResetPasswordEmail(email,data);
 
 }
 
@@ -310,7 +310,7 @@ export const resetPasswordService = async (payload) => {
     //now change password in Database
     const resetPassword = await UserModel.findOneAndUpdate({email},{password: newPassword});
     // console.log(resetPassword);
-    sendPasswordChangeEmail(user.email,{name:user.name});
+    await sendPasswordChangeEmail(user.email,{name:user.name});
     return resetPassword;
 }
 

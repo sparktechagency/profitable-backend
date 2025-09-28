@@ -103,11 +103,11 @@ export const getAllSubscriptionPlanByUserRoleService = async(userDetails,query) 
     }
 
     //check if this user already have used Free Plan or not
-    const hasFreePlan = await PaymentModel.findOne({user: userId,amount: 0});
+    const hasFreePlan = await PaymentModel.findOne({user: userId,duration: "15 Days"});
     // console.log(hasFreePlan);
     if(hasFreePlan){
         //if used free plan then don't show free plan again
-        allSubscription = allSubscription.filter((plan) => plan.price[0] !== 0 );
+        allSubscription = allSubscription.filter((plan) => plan.duration !== "15 Days" );
         // console.log(allSubscription);
     }
 

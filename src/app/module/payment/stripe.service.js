@@ -148,7 +148,7 @@ const updatePaymentAndRelatedAndSendMail = async (webhookEventData) => {
     };
 
     //send mail to user with payment details
-    sendSubscriptionEmail(updatedUser.email, emailData);
+    await sendSubscriptionEmail(updatedUser.email, emailData);
 
     // send notification
     postNotification(
@@ -178,7 +178,7 @@ export const postCheckoutService = async (userData, payload) => {
 
   validateFields(payload, ["subscriptionId","price","duration"]);
   const priceNumber = Number(price);
-  console.log(price);
+  // console.log(price);
 
   let subscriptionPlan;
   if(role === "Broker"){
@@ -234,7 +234,19 @@ export const postCheckoutService = async (userData, payload) => {
     };
 
     //send mail to user with payment details
-    sendSubscriptionEmail(user.email, emailData);
+    await sendSubscriptionEmail(user.email, emailData);
+
+    // send notification
+    postNotification(
+      "Subscription Success",
+      "Your subscription has been successfully updated.",
+      user._id
+    );
+
+    postNotification(
+      "New Subscriber",
+      "Profitable Business got a new subscriber. Check it out!"
+    );
 
     return 'https://profitablebusinessesforsale.com/payment-successfull';
   }
@@ -273,14 +285,14 @@ export const postCheckoutService = async (userData, payload) => {
       await coupon.save();
 
   }
-  console.log(amountInCents);
+  // console.log(amountInCents);
 
   //if user prefer a free plan
   if(amountInCents == 0){
 
     //check if user has already used Free plan or not
-    const freePlan = await PaymentModel.findOne({user: userId, amount: 0});
-    if(freePlan) throw new ApiError(403,"Already you have used free plan. You can't use it for twice");
+    // const freePlan = await PaymentModel.findOne({user: userId, amount: 0});
+    // if(freePlan) throw new ApiError(403,"Already you have used free plan. You can't use it for twice");
 
     const paymentData = {
       user: userId, amount: 0,duration,checkout_session_id: `FREE-${uuidv4()}`,subscriptionPlan: subscriptionPlan._id,
@@ -291,7 +303,7 @@ export const postCheckoutService = async (userData, payload) => {
     if(!payment) throw new ApiError(500," Failed to create new Payment");
 
     const user = await UserModel.findByIdAndUpdate(userId,{
-      subscriptionPlan: subscriptionId, subscriptionPlanPrice: 0, subscriptionPlanType: "Free Plan", subscriptionStartDate,subscriptionEndDate
+      subscriptionPlan: subscriptionId, subscriptionPlanPrice: priceNumber, subscriptionPlanType: subscriptionPlan.subscriptionPlanType, subscriptionStartDate,subscriptionEndDate
     },{new: true}).select("name email");
 
     //get user detail
@@ -300,7 +312,7 @@ export const postCheckoutService = async (userData, payload) => {
     // send email to user
     const emailData = {
       name: user.name,
-      subscriptionPlan: "Free Plan",
+      subscriptionPlan: subscriptionPlan.subscriptionPlanType,
       price: 0,
       currency: "USD",
       startDate: subscriptionStartDate,
@@ -309,7 +321,19 @@ export const postCheckoutService = async (userData, payload) => {
     };
 
     //send mail to user with payment details
-    sendSubscriptionEmail(user.email, emailData);
+    await sendSubscriptionEmail(user.email, emailData);
+
+    // send notification
+    postNotification(
+      "Subscription Success",
+      "Your subscription has been successfully updated.",
+      user._id
+    );
+
+    postNotification(
+      "New Subscriber",
+      "Profitable Business got a new subscriber. Check it out!"
+    );
 
     return 'https://profitablebusinessesforsale.com/payment-successfull';
   }
@@ -450,10 +474,20 @@ const updateUserSubscriptionStatus = catchAsync(async () => {
   );
 
   // send email to each expired user
-  emailOfExpiredUsers.forEach((user) => {
-    sendSubscriptionExpiredEmail(user.email,{name: user.name, subscriptionEndDate: user.subscriptionEndDate});
-    console.log("email sent to", user.email);
-  });
+  // emailOfExpiredUsers.forEach((user) => {
+  //   sendSubscriptionExpiredEmail(user.email,{name: user.name, subscriptionEndDate: user.subscriptionEndDate});
+  //   console.log("email sent to", user.email);
+  // });
+
+  for (const user of emailOfExpiredUsers) {
+    
+      await sendSubscriptionExpiredEmail(user.email, {
+        name: user.name,
+        subscriptionEndDate: user.subscriptionEndDate
+      });
+      console.log("email sent to", user.email);
+  }
+
 
   const updatedUser = await UserModel.updateMany(
     {

@@ -370,7 +370,7 @@ export const approveBusinessController = catchAsync( async (req,res) => {
     //send notification to user that his business got approval
     if(business.isApproved === true){
         postNotification("Your business got Approval","Admin approved your business and it is open to all buyers and investors",business.user);
-        sendListingConfirmationEmail(business.user.email,{name: business.user.name,title: business.title, location: business.countryName,Date: business.createdAt});
+        await sendListingConfirmationEmail(business.user.email,{name: business.user.name,title: business.title, location: business.countryName,Date: business.createdAt});
     }else{
         postNotification("Your business is Rejected","Admin rejected your business. Contact with Admin to get support",business.user);
     }

@@ -35,7 +35,7 @@ export const makeAMeetingScheduleService = async (payload) => {
     await postNotification("New Meeting Scheduled",`You scheduled a meeting with PBFS at ${time} on ${date}`,userId);
 
     //send Email to user
-    sendMakeScheduleEmail(email,{name,date,time,timeZone,topic});
+    await sendMakeScheduleEmail(email,{name,date,time,timeZone,topic});
     return newSchedule;
 }
 

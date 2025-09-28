@@ -71,6 +71,7 @@ const listigConfirmationEmailTemp = (data) =>
           
           <p>Hello, ${data.name}</p>
           <p>Good news – your listing has been published on ProfitableBusinessesForSale.com. </p>
+          
           <p> Listing: ${data.title}</p>
           <p> Location: ${data.location}</p>
           <p> Date: ${data.Date.getDate()}</p>

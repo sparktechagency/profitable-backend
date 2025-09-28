@@ -70,7 +70,7 @@ const buyerEnquiryEmailTemp = (data) => `
         
         <p>Hello, ${data.sellerName}</p>
         <p>Good news! A buyer has shown interest in your business listed on ProfitableBusinessesForSale.com.</p>
-        ${!data.businessTitle ? `<p>To receive the details of new listed business, you have to buy   subscription plan</p>`  : `
+        ${!data.businessTitle ? `<p>To receive the details of new interested user, you have to buy   subscription plan</p>`  : `
             <h3>Business: ${data.businessTitle}</h3>
             <h3>Buyer Name: ${data.buyerName}</h3>
             <h3>Buyer Email: ${data.buyerEmail}</h3>
