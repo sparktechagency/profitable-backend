@@ -261,7 +261,7 @@ export const postCheckoutService = async (userData, payload) => {
 
   //handle coupon
   if (couponCode) {
-
+    console.log( "Applying coupon:", couponCode );
       // 2️⃣ Find the coupon
       const coupon = await CouponModel.findOne({ couponCode: couponCode });
 
@@ -281,9 +281,13 @@ export const postCheckoutService = async (userData, payload) => {
       }
 
       //check coupon usage limit
-      if(coupon.couponUsesCount >= coupon.usageLimit){
-          throw new ApiError(400, "Coupon usage limit exceeded. you can't use it.");
+      // if(coupon.usageLimit !== "unlimited" &&  coupon.couponUsesCount >= Number(coupon.usageLimit)){
+      //     throw new ApiError(400, "Coupon usage limit exceeded. you can't use it.");
+      // }
+      if (coupon.usageLimit !== "unlimited" && !isNaN(Number(coupon.usageLimit)) && coupon.couponUsesCount >= Number(coupon.usageLimit)) {
+        throw new ApiError(400, "Coupon usage limit exceeded. You can't use it.");
       }
+
 
       // 5️⃣ Calculate discount
       const discountAmount = (amountInCents * coupon.discount) / 100; // discount as percentage
