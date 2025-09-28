@@ -280,6 +280,11 @@ export const postCheckoutService = async (userData, payload) => {
           throw new ApiError(400,  "Coupon is expired or not yet valid." );
       }
 
+      //check coupon usage limit
+      if(coupon.couponUsesCount >= coupon.usageLimit){
+          throw new ApiError(400, "Coupon usage limit exceeded. you can't use it.");
+      }
+
       // 5️⃣ Calculate discount
       const discountAmount = (amountInCents * coupon.discount) / 100; // discount as percentage
       amountInCents = amountInCents - discountAmount;
