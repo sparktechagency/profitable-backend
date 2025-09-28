@@ -102,6 +102,10 @@ export const getAllSubscriptionPlanByUserRoleService = async(userDetails,query) 
         throw new ApiError(500, "failed to get subscription option");
     }
 
+    //business idea lister can use free plan multiple times
+    if(userDetails.role === "Business Idea Lister"){
+        return allSubscription;
+    }
     //check if this user already have used Free Plan or not
     const hasFreePlan = await PaymentModel.findOne({user: userId,duration: "15 Days"});
     // console.log(hasFreePlan);

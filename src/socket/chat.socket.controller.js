@@ -380,9 +380,7 @@ export const sendMessage = socketCatchAsync(async (socket, io, payload) => {
     message,
   });
 
-  // notify both user and driver upon new message
-  // postNotification("New message", message, receiverId);
-  // postNotification("New message", message, userId);
+  
 
   await Promise.all([
     ChatModel.updateOne({ _id: chatId }, { $push: { messages: newMessage._id } }),
@@ -399,11 +397,16 @@ export const sendMessage = socketCatchAsync(async (socket, io, payload) => {
   await getChatList(socket, io, { userId });
   await getChatList(socket, io, {userId: receiverId});
 
+  
   // Fetch sender and receiver details for email
   const [sender, receiver] = await Promise.all([
     UserModel.findById(userId).lean().select("name"),
     UserModel.findById(receiverId).lean().select("name email"),
   ]);
+
+  // notify both user and driver upon new message
+  postNotification("New message", `you received a new message from ${sender.name}. Check it from Message`, receiverId);
+  // postNotification("New message", message, userId);
   
   await sendNewMessageEmail(receiver.email, {
       name: receiver.name,

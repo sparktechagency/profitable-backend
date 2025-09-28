@@ -204,8 +204,12 @@ export const postCheckoutService = async (userData, payload) => {
   if(priceNumber == 0){
 
     //check if user has already used Free plan or not
-    const freePlan = await PaymentModel.findOne({user: userId, amount: 0});
-    if(freePlan) throw new ApiError(403,"Already you have used free plan. You can't use it for twice");
+    if(role !== "Business Idea Lister"){
+      const hasFreePlan = await PaymentModel.findOne({user: userId,duration: "15 Days"});
+      if(hasFreePlan) throw new ApiError(403,"Already you have used free plan. You can't use it for twice");
+    }
+    // const freePlan = await PaymentModel.findOne({user: userId, amount: 0});
+    // if(freePlan) throw new ApiError(403,"Already you have used free plan. You can't use it for twice");
 
     const paymentData = {
       user: userId, amount: 0,duration,checkout_session_id: `FREE-${uuidv4()}`,subscriptionPlan: subscriptionPlan._id,
@@ -480,7 +484,7 @@ const updateUserSubscriptionStatus = catchAsync(async () => {
   // });
 
   for (const user of emailOfExpiredUsers) {
-    
+
       await sendSubscriptionExpiredEmail(user.email, {
         name: user.name,
         subscriptionEndDate: user.subscriptionEndDate
