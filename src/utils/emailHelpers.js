@@ -155,8 +155,8 @@ export const sendListingConfirmationEmail = async (email,data) => {
   try {
     await sendEmail({
       email,
-      subject: "Your PBFS Password is Updated ",
-      html: changePasswordConfirmationTemp(data),
+      subject: "Your Listing is Now Live on PBFS!",
+      html: listigConfirmationEmailTemp(data),
     });
   } catch (error) {
     console.log(error);
@@ -168,8 +168,8 @@ export const sendPasswordChangeEmail = async (email,data) => {
   try {
     await sendEmail({
       email,
-      subject: "Your Listing is Now Live on PBFS!",
-      html: listigConfirmationEmailTemp(data),
+      subject: "Your Password Changed Successfully - PBFS",
+      html: changePasswordConfirmationTemp(data),
     });
   } catch (error) {
     console.log(error);

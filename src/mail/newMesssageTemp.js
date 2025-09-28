@@ -70,7 +70,9 @@ const newMessageEmailTemp = (data) =>
         <div class="container">
           
           <p>Hello, ${data.name}</p>
-          <p>You’ve received a new message ${data.message ? data.message : ''} from ${data.user} on PBFS.  </p>
+          <p>You’ve received a new message  from ${data.user} on PBFS.  </p>
+
+          <h3>${data.message ? data.message : ''}</h3>
           <p> View Message & Respond</p>
           
           <p>Stay engaged - quick replies lead to stronger business connections.</p>

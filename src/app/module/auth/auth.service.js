@@ -164,18 +164,18 @@ export const verifyEmailSendOtpService = async (payload) => {
 }
 
 export const verifyEmailVerifyOtpService = async (payload) => {
-    const {email,code} = payload;
-
+    const {email,code,role} = payload;
+    console.log(payload);
     //check if email exist or not
-    validateFields(payload,['email','code']);
+    validateFields(payload,['email','code','role']);
 
-    if (!email) {
-        throw new ApiError(400, "Email is required to very otp code");
-    }
+    // if (!email) {
+    //     throw new ApiError(400, "Email is required to very otp code");
+    // }
 
     //now check user
-    const user = await UserModel.findOne({email}).lean();
-
+    const user = await UserModel.findOne({email: email,role: role}).lean();
+    console.log(user);
     if(!user){
          throw new ApiError(404, "user not found");
     }
@@ -191,7 +191,7 @@ export const verifyEmailVerifyOtpService = async (payload) => {
     }
 
     //update user after matching code;
-    const verifiedUser = await UserModel.findOneAndUpdate({email},{isEmailVerified: true, verificationCode: null, verificationCodeExpire: null},{new: true}).select('name email isEmailVerified');
+    const verifiedUser = await UserModel.findOneAndUpdate({email,role},{isEmailVerified: true, verificationCode: null, verificationCodeExpire: null},{new: true}).select('name email isEmailVerified');
 
     //generate token
     const tokenPayload = {
@@ -213,15 +213,15 @@ export const verifyEmailVerifyOtpService = async (payload) => {
 
 //forget password send otp
 export const forgetPasswordService = async (payload) => {
-    const { email } = payload;
+    const { email,role } = payload;
 
     //check if email is exist or not
-    if(!email){
-        throw new ApiError(400, "Email id is required to verify email");
+    if(!email || !role){
+        throw new ApiError(400, "Email and role is required to verify email");
     }
 
     //check if user exist or not
-    const user = await UserModel.findOne({email});
+    const user = await UserModel.findOne({email,role});
     if(!user){
         throw new ApiError(404, "User does not exist");
     }
@@ -248,15 +248,15 @@ export const forgetPasswordService = async (payload) => {
 
 //forget password otp verify service 
 export const forgetPasswordOtpVerifyService = async (payload) => {
-    const {email,code} = payload;
+    const {email,code,role} = payload;
 
     //check if email exist or not
-    if (!email) {
-        throw new ApiError(400, "Email id is required to check forget password otp");
+    if (!email || !role) {
+        throw new ApiError(400, "Email and role is required to check forget password otp");
     }
 
     //now check user
-    const user = await UserModel.findOne({email});
+    const user = await UserModel.findOne({email,role});
 
     if(!user){
          throw new ApiError(404, "user not found");
@@ -273,7 +273,7 @@ export const forgetPasswordOtpVerifyService = async (payload) => {
     }
 
     //update user after matching code;
-    const verifiedUser = await UserModel.findOneAndUpdate({email},{ verificationCode: null, verificationCodeExpire: null},{new: true}).select('name email');
+    const verifiedUser = await UserModel.findOneAndUpdate({email,role},{ verificationCode: null, verificationCodeExpire: null},{new: true}).select('name email');
 
     return verifiedUser;
 }
