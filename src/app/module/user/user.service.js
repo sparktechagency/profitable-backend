@@ -81,7 +81,7 @@ export const sellerDetailService = async (req) => {
     
     else if(buyer.subscriptionPlan && buyer.subscriptionPlan.subscriptionPlanPrice !== 0){
         console.log("enters");
-         userDetails = await UserModel.findById(userId).select("name email image location mobile role");
+         userDetails = await UserModel.findById(userId).select("name email image country mobile role").lean();
         // console.log(userDetails);
         
         if(!userDetails){

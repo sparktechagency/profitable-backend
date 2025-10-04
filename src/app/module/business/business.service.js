@@ -209,7 +209,7 @@ export const createNewBusinessService = async (req) => {
         await sendAdminEmail(config.smtp.smtp_mail,{name: "Admin", title: newBusiness.title, category: newBusiness.category,country: newBusiness.countryName});
 
         //send email to all buyer and investor
-        sendNotificationToAllBuyerAndInvestor(title,countryName,businessType,role);
+        // sendNotificationToAllBuyerAndInvestor(title,countryName,businessType,role);
     }
 }
 

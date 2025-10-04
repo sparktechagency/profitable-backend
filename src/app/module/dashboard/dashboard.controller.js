@@ -9,6 +9,54 @@ import validateFields from "../../../utils/validateFields.js";
 import postNotification from "../../../utils/postNotification.js";
 import { sendListingConfirmationEmail } from "../../../utils/emailHelpers.js";
 
+//utility function 
+// to send email to all buyer and investor when a new business listed
+const sendNotificationToAllBuyerAndInvestor = async (title,country,businessType,role) => {
+    //find out all buyer and investor who has subscription plan
+    if(role === "Business Idea Lister"){
+        const users = await UserModel.find({role: Investor,subscriptionPlanPrice: { $gt: 0 }}).select("name email").lean();
+    
+        //now send notification to all buyer and investor
+        if(users.length > 0){
+            for (const user of users) {
+                postNotification(
+                    "Latest listed Idea",
+                    `Business Idea: ${title}, location: ${country},`,
+                    user._id
+                );
+                await newBusinessListingEmail(user.email, {
+                    name: user.name,
+                    title,
+                    country,
+                    businessType
+                });
+            }
+
+        }
+    }
+    else {
+
+        const users = await UserModel.find({role: { $in: ["Buyer","Investor"]},subscriptionPlanPrice: { $gt: 0 }}).select("name email").lean();
+    
+        //now send notification to all buyer and investor
+        if(users.length > 0){
+            for (const user of users ) {
+                postNotification(
+                    "Latest listed Business",
+                    `Business : ${title}, location: ${country},`,
+                    user._id
+                );
+                await newBusinessListingEmail(user.email, {
+                    name: user.name,
+                    title,
+                    country,
+                    businessType
+                });
+            }
+
+        }
+    }
+}
 
 //api ending point to get data for dashboard
 export const dashboardController = catchAsync( async (req,res) => {
@@ -370,7 +418,11 @@ export const approveBusinessController = catchAsync( async (req,res) => {
     //send notification to user that his business got approval
     if(business.isApproved === true){
         postNotification("Your business got Approval","Admin approved your business and it is open to all buyers and investors",business.user);
+        //send email to user
         await sendListingConfirmationEmail(business.user.email,{name: business.user.name,title: business.title, location: business.countryName,Date: business.createdAt});
+
+        //send email to all buyer and investor
+        await sendNotificationToAllBuyerAndInvestor(business.title,business.countryName,business.businessType,business.businessRole);
     }else{
         postNotification("Your business is Rejected","Admin rejected your business. Contact with Admin to get support",business.user);
     }
