@@ -103,9 +103,9 @@ export const userLoginService = async (payload) => {
     }
     
     //check if user's email is verified or not
-    if(!user.isEmailVerified){
-        throw new ApiError(400, "Before login verify your email");
-    }
+    // if(!user.isEmailVerified){
+    //     throw new ApiError(400, "Before login verify your email");
+    // }
     
     //check if password is matched or not
     // const isPasswordMatched = await bcrypt.compare(password,user.password);
@@ -300,9 +300,9 @@ export const resetPasswordService = async (payload) => {
         throw new ApiError(404, "User not found!");
     } 
   
-    if (!user.isEmailVerified) {
-        throw new ApiError(403, "Please complete email verification");
-    }
+    // if (!user.isEmailVerified) {
+    //     throw new ApiError(403, "Please complete email verification");
+    // }
 
     //hash password
     // const hashPass = await hashPassword(newPassword);
