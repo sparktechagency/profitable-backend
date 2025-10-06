@@ -33,10 +33,10 @@ export const userRegistrationProcess = async (payload) => {
     }
 
     //check if user already exist or not
-    const user = await UserModel.findOne({email});
+    const user = await UserModel.findOne({email: email,role: role});
     //if user exist then following steps will be followed
     
-    if(user && (user.role === role)){
+    if(user){
         throw new ApiError(403,"Already you have an account with same Email and Role. So please login");
     }  
 
@@ -175,7 +175,7 @@ export const verifyEmailVerifyOtpService = async (payload) => {
 
     //now check user
     const user = await UserModel.findOne({email: email,role: role}).lean();
-    console.log(user);
+    // console.log(user);
     if(!user){
          throw new ApiError(404, "user not found");
     }

@@ -491,7 +491,7 @@ export const advancedSearchService = async (query) => {
 // get business valuation service
 export const getBusinessValuationService = async (req) => {
     //destructure all data from payload
-    const { ownerName,businessName,email, countryCode, mobile, region, country,location,businessType,category, annualTurnover, currency, yearOfEstablishment, annualExpenses,purpose, annualProfit,valueOfAsset,valueOfStock,message } = req.body;
+    const { ownerName,businessName,email, countryCode, mobile, region, country,location,businessType,category,subCategory, annualTurnover, currency, yearOfEstablishment, annualExpenses,purpose, annualProfit,valueOfAsset,valueOfStock,message } = req.body;
     
     validateFields(req.body,["ownerName","email"]);
 
@@ -532,6 +532,7 @@ export const getBusinessValuationService = async (req) => {
                 location : ${location ? location : "NA"}\n
                 Business Type : ${businessType ? businessType : "NA"}\n
                 Category : ${category ? category : "NA"}\n
+                Sub Category : ${subCategory ? subCategory : "NA"}\n
                 Annual Turnover : ${annualTurnover ? annualTurnover : "NA"}\n
                 Currency : ${currency ? currency : "NA"}\n
                 Year Of Establishment : ${yearOfEstablishment ? yearOfEstablishment : "NA"}\n

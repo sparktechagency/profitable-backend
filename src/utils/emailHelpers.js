@@ -16,6 +16,7 @@ import changePasswordConfirmationTemp from "../mail/changePasswordTemp.js";
 import newMessageEmailTemp from "../mail/newMesssageTemp.js";
 import makeScheduleEmail from "../mail/makeScheduleEmailTemp.js";
 import adminEmailTemp from "../mail/addAdminEmailTemp.js";
+import listingRejectionEmailTemp from "../mail/rejectionEmailTemp.js";
 
 
 
@@ -196,6 +197,19 @@ export const sendMakeScheduleEmail = async (email,data) => {
       email,
       subject: "You scheduled a new meeting with PBFS ",
       html: makeScheduleEmail(data),
+    });
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(status.INTERNAL_SERVER_ERROR, error.message);
+  }
+};
+
+export const sendRejectionEmail = async (email,data) => {
+  try {
+    await sendEmail({
+      email,
+      subject: "Your listing has been rejected - PBFS ",
+      html: listingRejectionEmailTemp(data),
     });
   } catch (error) {
     console.log(error);

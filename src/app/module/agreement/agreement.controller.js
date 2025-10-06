@@ -23,7 +23,7 @@ export const createNewAgreement = catchAsync(
         // const file3 = files[2] ? files[2].filename : ''; 
 
         const pdfPath = await createNDAFile({ name, email, phone, nidPassportNumber},role, files);
-        console.log(pdfPath);
+        // console.log(pdfPath);
 
         const agreement = await Agreement.create({
            user: userId, userRole: role,name,email,phone,nidPassportNumber, nda: pdfPath

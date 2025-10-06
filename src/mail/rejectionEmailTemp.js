@@ -1,4 +1,4 @@
-const listigConfirmationEmailTemp = (data) =>
+const listingRejectionEmailTemp = (data) =>
   ` 
     <html>
       <head>
@@ -70,14 +70,14 @@ const listigConfirmationEmailTemp = (data) =>
         <div class="container">
           
           <p>Hello, ${data.name}</p>
-          <p>Good news – your listing has been published on ProfitableBusinessesForSale.com. </p>
+          <p>Unfortunately – your listing has been rejected on ProfitableBusinessesForSale.com. by admin</p>
           
           <p> Listing: ${data.title}</p>
           <p> Location: ${data.location}</p>
-          <p> Date: ${new Date(data.Date).toLocaleDateString('en-GB')} </p>
+          <p> Date: ${new Date(data.Date).toLocaleDateString('en-GB')}</p>
           
           <p><a href="https://profitablebusinessesforsale.com/">View</a> your listing</p>
-          <p>Tip: Listings with detailed descriptions and high-quality photo attract up to 50% more buyers. </p>
+          <p>Please contact with Admin for more details </p>
           <p>Best Regards,<br>Team PBFS</p>
         </div>
         <div class="footer">
@@ -93,6 +93,6 @@ const listigConfirmationEmailTemp = (data) =>
     </html>
   `;
 
-export default listigConfirmationEmailTemp;
+export default listingRejectionEmailTemp;
 
 // <-- <a href="https://profitablebusinessesforsale.com/"><img src="uploads/logo/pbfs-logo.png" alt="PBFS" class="logo-img"/></a> -->

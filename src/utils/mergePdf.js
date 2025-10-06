@@ -154,7 +154,7 @@ async function createNDAFile(user,role, files) {
     
   let pdfDoc = await generateNDAPdf(ndaText);
   
-  pdfDoc = await addSignature(pdfDoc, "uploads/NDA/Signature.png",user);
+  pdfDoc = await addSignature(pdfDoc, "uploads/NDA/bilal_signature.png",user);
 
   for (const file of files) {
     // const existingPdf = await PDFDocument.load(file.buffer);

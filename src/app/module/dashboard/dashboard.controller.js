@@ -7,7 +7,7 @@ import ApiError from "../../../error/ApiError.js";
 import mongoose from "mongoose";
 import validateFields from "../../../utils/validateFields.js";
 import postNotification from "../../../utils/postNotification.js";
-import { sendListingConfirmationEmail } from "../../../utils/emailHelpers.js";
+import { sendListingConfirmationEmail, sendRejectionEmail } from "../../../utils/emailHelpers.js";
 
 //utility function 
 // to send email to all buyer and investor when a new business listed
@@ -62,7 +62,7 @@ const sendNotificationToAllBuyerAndInvestor = async (title,country,businessType,
 export const dashboardController = catchAsync( async (req,res) => {
    
     const [totalUser,totalBusiness,totalCategory] = await Promise.all([
-        UserModel.countDocuments(),BusinessModel.countDocuments(),CategoryModel.countDocuments()
+        UserModel.countDocuments(),BusinessModel.countDocuments({isApproved: true}),CategoryModel.countDocuments()
     ]); 
 
     const year = req.query.year; // pass dynamic year from query or params
@@ -70,6 +70,7 @@ export const dashboardController = catchAsync( async (req,res) => {
     const result = await BusinessModel.aggregate([
         {
             $match: {
+                isApproved: true,
                 createdAt: {
                     $gte: new Date(`${year}-01-01`),   // first day of year
                     $lt: new Date(`${year + 1}-01-01`) // first day of next year
@@ -381,7 +382,7 @@ export const allListedBusiness = catchAsync( async (req,res) => {
             filter = {}; // optional fallback
     }
 
-    const business = await BusinessModel.find(filter).populate({path: "user", select:"name email image"}).skip(skip).limit(limit);
+    const business = await BusinessModel.find(filter).populate({path: "user", select:"name email image"}).sort({ createdAt: -1 }).skip(skip).limit(limit);
 
     const total = await BusinessModel.countDocuments();
     const totalPage = Math.ceil(total / limit);
@@ -425,9 +426,11 @@ export const approveBusinessController = catchAsync( async (req,res) => {
         await sendNotificationToAllBuyerAndInvestor(business.title,business.countryName,business.businessType,business.businessRole);
     }else{
         postNotification("Your business is Rejected","Admin rejected your business. Contact with Admin to get support",business.user);
-    }
 
-    
+        //send email to user
+        await sendRejectionEmail(business.user.email,{name: business.user.name,title: business.title, location: business.countryName,Date: business.createdAt});
+
+    }
     // return {totalListed,totalApproved,totalSold,rejectedListing};
     sendResponse(res,{
         statusCode: 200,
