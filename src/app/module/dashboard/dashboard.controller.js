@@ -12,10 +12,10 @@ import { sendListingConfirmationEmail, sendRejectionEmail,newBusinessListingEmai
 //utility function 
 // to send email to all buyer and investor when a new business listed
 const sendNotificationToAllBuyerAndInvestor = async (title,country,businessType,role) => {
-    // console.log("Sending email to all buyer and investor");
+    console.log("Sending email to all buyer and investor");
     //find out all buyer and investor who has subscription plan
     if(role === "Business Idea Lister"){
-        const users = await UserModel.find({role: Investor,subscriptionPlanPrice: { $gt: 0 }}).select("name email").lean();
+        const users = await UserModel.find({role: "Investor",subscriptionPlanPrice: { $gt: 0 }}).select("name email").lean();
     
         //now send notification to all buyer and investor
         if(users.length > 0){
