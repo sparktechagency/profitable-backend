@@ -7,11 +7,12 @@ import ApiError from "../../../error/ApiError.js";
 import mongoose from "mongoose";
 import validateFields from "../../../utils/validateFields.js";
 import postNotification from "../../../utils/postNotification.js";
-import { sendListingConfirmationEmail, sendRejectionEmail } from "../../../utils/emailHelpers.js";
+import { sendListingConfirmationEmail, sendRejectionEmail,newBusinessListingEmail } from "../../../utils/emailHelpers.js";
 
 //utility function 
 // to send email to all buyer and investor when a new business listed
 const sendNotificationToAllBuyerAndInvestor = async (title,country,businessType,role) => {
+    // console.log("Sending email to all buyer and investor");
     //find out all buyer and investor who has subscription plan
     if(role === "Business Idea Lister"){
         const users = await UserModel.find({role: Investor,subscriptionPlanPrice: { $gt: 0 }}).select("name email").lean();
