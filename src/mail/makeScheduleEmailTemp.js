@@ -71,6 +71,8 @@ const makeScheduleEmail = (data) =>
           <p>Hello, ${data.name}</p>
           <p>You have scheduled a new meeting with PBFS </p>
 
+          <h3>Name: ${data.name}</h3>
+          <h3>Email: ${data.email}</h3>
           <h3>Date: ${data.date}</h3>
           <h3>Time: ${data.time}</h3>
           <h3>Timezone: ${data.timeZone}</h3>

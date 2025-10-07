@@ -73,6 +73,7 @@ export const SingleFormationService = async (query) => {
 
 //update formation service
 export const updateFormationService = async (req) => {
+    console.log(req.body, req.file, req.query);
     const { formatId } = req.query;
     if(!formatId){
         throw new ApiError(400, "Formation Id is required to update a format");

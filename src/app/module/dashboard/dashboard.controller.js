@@ -29,7 +29,8 @@ const sendNotificationToAllBuyerAndInvestor = async (title,country,businessType,
                     name: user.name,
                     title,
                     country,
-                    businessType
+                    businessType,
+                    role
                 });
             }
 
@@ -51,7 +52,8 @@ const sendNotificationToAllBuyerAndInvestor = async (title,country,businessType,
                     name: user.name,
                     title,
                     country,
-                    businessType
+                    businessType,
+                    role
                 });
             }
 
@@ -379,13 +381,16 @@ export const allListedBusiness = catchAsync( async (req,res) => {
         case "Business Idea Lister":
             filter = { businessRole: "Business Idea Lister", isApproved: true };
             break;
+        case "Broker":
+            filter = { businessRole: "Broker", isApproved: true };
+            break;
         default:
             filter = {}; // optional fallback
     }
 
     const business = await BusinessModel.find(filter).populate({path: "user", select:"name email image"}).sort({ createdAt: -1 }).skip(skip).limit(limit);
 
-    const total = await BusinessModel.countDocuments();
+    const total = await BusinessModel.countDocuments(filter);
     const totalPage = Math.ceil(total / limit);
    
     sendResponse(res,{

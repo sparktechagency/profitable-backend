@@ -1,7 +1,7 @@
 import express from "express";
 import multer from "multer";
 import path from "path";
-import { createNewAgreement, getAllNdaAgreement } from "./agreement.controller.js";
+import { createNewAgreement, deleteAgreement, getAllNdaAgreement } from "./agreement.controller.js";
 import { authorizeUser } from "../../middleware/AuthMiddleware.js";
 
 
@@ -47,6 +47,6 @@ agreementRouter.post("/create-agreement",authorizeUser , uploadPdf.array("nda-fi
 
 //dashboard
 agreementRouter.get("/get-all-agreement", getAllNdaAgreement);
-// agreementRouter.get("/get-single-agreement", );
+agreementRouter.delete("/delete-agreement/:agreementId", deleteAgreement);
 
 export default agreementRouter;

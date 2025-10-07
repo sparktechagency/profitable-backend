@@ -35,7 +35,7 @@ export const makeAMeetingScheduleService = async (payload) => {
     await postNotification("New Meeting Scheduled",`You scheduled a meeting with PBFS at ${time} on ${date}`,userId);
 
     //send Email to user
-    await sendMakeScheduleEmail(email,{name,date,time,timeZone,topic});
+    await sendMakeScheduleEmail(email,{name,email,date,time,timeZone,topic});
     return newSchedule;
 }
 
@@ -49,4 +49,19 @@ export const retrieveAllMeetingScheduleService = async () => {
     }
 
     return allSchedule;
+}
+
+//delete a meeting schedule
+export const deleteMeetingScheduleService = async (params) => { 
+    const {scheduleId} = params;
+
+    if(!scheduleId){
+        throw new ApiError(400,"Schedule id is required");
+    }   
+    const deletedSchedule = await ScheduleModel.findByIdAndDelete(scheduleId);
+
+    if(!deletedSchedule){
+        throw new ApiError(500,"Failed to delete the schedule");
+    }
+    return deletedSchedule;
 }

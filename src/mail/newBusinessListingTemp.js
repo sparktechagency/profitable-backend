@@ -69,7 +69,9 @@ const newBusinessListing = (data) =>
         <div class="container">
           
           <p>Hello, ${data.name}</p>
-          <p>A new business opportunity has just been listed on ProfitableBusinessesForSale.com that may interest you. </p>
+          
+          ${data.role === "Investor" ? `<p>A new business idea has just been listed on ProfitableBusinessesForSale.com that may interest you. </p>` : `<p>A new business opportunity has just been listed on ProfitableBusinessesForSale.com that may interest you. </p>`}
+
           <h3>Business: ${data.title}</h3>
           <h3>Location: ${data.country}</h3>
           <h3>Type: ${data.businessType}</h3>

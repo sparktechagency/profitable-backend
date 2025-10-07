@@ -248,7 +248,7 @@ export const updateABusinessService = async (req) => {
       
     //findout which business instance have to update
     const updatedBusiness = await BusinessModel.findByIdAndUpdate(businessId,{
-        image: updatedImage,title,category,subCategory, country, state, city, countryName, askingPrice, price, ownerShipType, businessType, reason, description
+        image: updatedImage,title,category,subCategory, country, state, city, countryName, askingPrice, price, ownerShipType, businessType, reason, description, isApproved: false
     },{ new: true });
 
     if(!updatedBusiness){
@@ -260,9 +260,18 @@ export const updateABusinessService = async (req) => {
         deleteFile("business-image",oldImages);
     }
           
-    //send update notification to user
-    postNotification(" Your business is updated", `Your business named ${updatedBusiness.title} is updated`, updatedBusiness._id);
     // console.log(updatedBusiness);
+    
+    //send email to admin also
+    if(updatedBusiness){
+        //send update notification to user
+        postNotification(" Your business is updated", `Your business named ${updatedBusiness.title} is updated and now wait for admin's approval`, updatedBusiness._id);
+        
+        //send email to admin also
+        await sendAdminEmail(config.smtp.smtp_mail,{name: "Admin", title: updatedBusiness.title, category: updatedBusiness.category,country: updatedBusiness.countryName, updated: true});
+
+    }
+
     
     return updatedBusiness;
 }

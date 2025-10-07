@@ -28,3 +28,16 @@ export const retrieveAllMeetingSchedule = catchAsync ( async (req,res) => {
         data: response
     });
 });
+
+//api ending point to delete meeting schedule
+export const deleteMeetingSchedule = catchAsync ( async (req,res) => {
+
+    const response = await retrieveAllMeetingScheduleService(req.params);
+
+    sendResponse(res,{
+        statusCode: 200,
+        success: true,
+        message: "deleted a meeting schedule successfully",
+        data: response
+    });
+});

@@ -7,6 +7,7 @@ import config from "../../../config/index.js";
 import termsAndConditionModel from "./termsAndCondition.model.js";
 import privacyPolicyModel from "./privacyPolicy.model.js";
 import QueryBuilder from "../../../builder/queryBuilder.js";
+import RefundCancellationModel from "./refund.model.js";
 
 
 
@@ -171,6 +172,7 @@ export const updatePrivacyPolicy = catchAsync(
         });
     }
 );
+
 //api ending point to create terms and condition
 export const getPrivacyPolicy = catchAsync(
     async (req,res) => {
@@ -182,6 +184,47 @@ export const getPrivacyPolicy = catchAsync(
             statusCode: 200,
             success: true,
             message: "got privacy policy",
+            data: response
+        });
+    }
+);
+
+//api ending point to create refund and cancellation policy
+export const getRefundPolicy = catchAsync(
+    async (req,res) => {
+
+        const privacyId = "68e4a09539a79ca94f470524";
+
+        const response = await RefundCancellationModel.findById(privacyId);
+
+        if (!response) throw new ApiError(500, "Failed to get privacy policy");
+
+        sendResponse(res,{
+            statusCode: 200,
+            success: true,
+            message: "got refund policy",
+            data: response
+        });
+    }
+);
+
+//api ending point to update refund and cancellation policy
+export const updateRefundPolicy = catchAsync(
+    async (req,res) => {
+
+        const {description} = req.body;
+
+        if(!description) throw new ApiError(400, "Refund policy is needed to update");
+        
+        const policyId = "68e4a09539a79ca94f470524";
+
+        const response = await RefundCancellationModel.findByIdAndUpdate(policyId,{description},{new: true});
+        if(!response) throw new ApiError(500, "Failed to update Privacy Policy");
+
+        sendResponse(res,{
+            statusCode: 200,
+            success: true,
+            message: "updated refund policy",
             data: response
         });
     }

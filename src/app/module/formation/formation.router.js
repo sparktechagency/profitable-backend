@@ -47,7 +47,7 @@ var upload = multer({
 formationRouter.post("/create-format", upload.single("formation-image"), createNewFormat);
 formationRouter.get("/get-all-format", getAllFormation);
 formationRouter.get("/single-format", singleFormationDetails);
-formationRouter.patch("/update-format", updateFormation);
+formationRouter.patch("/update-format", upload.single("formation-image"), updateFormation);
 formationRouter.delete("/delete-format", deleteFormation);
 
 //make an user interedted to a formation

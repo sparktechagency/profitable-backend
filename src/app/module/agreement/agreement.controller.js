@@ -71,3 +71,25 @@ export const getAllNdaAgreement = catchAsync(
         })
     }
 );
+
+//delete an agreement
+export const deleteAgreement = catchAsync(
+    async (req,res) => {
+
+        const { agreementId } = req.params;
+        if(!agreementId) throw new ApiError(400,"Agreement Id is required to delete an agreement");
+
+        const agreement = await Agreement.findByIdAndDelete(agreementId);
+        if(!agreement) throw new ApiError(404,"No agreement found");
+        //delete the nda file also
+        if(agreement.nda && fs.existsSync(agreement.nda)){
+            fs.unlinkSync(agreement.nda);
+        }
+        sendResponse(res,{
+            statusCode: 200,
+            success: true,
+            message: "Deleted an agreement successfully",
+            data: agreement
+        });
+    }
+);
