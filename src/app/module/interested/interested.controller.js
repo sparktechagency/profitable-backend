@@ -12,7 +12,7 @@ export const  makeAnUserInterested = catchAsync(async (req,res) => {
     sendResponse(res,{
         statusCode: 201,
         success: true,
-        message: "listed a user as interested to a business",
+        message: "Your interest has been submitted to the Lister",
         data: newInterestedUser
     });
 });
