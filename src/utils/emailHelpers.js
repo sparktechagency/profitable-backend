@@ -17,6 +17,10 @@ import newMessageEmailTemp from "../mail/newMesssageTemp.js";
 import makeScheduleEmail from "../mail/makeScheduleEmailTemp.js";
 import adminEmailTemp from "../mail/addAdminEmailTemp.js";
 import listingRejectionEmailTemp from "../mail/rejectionEmailTemp.js";
+import adminNdaEmailTemp from "../mail/adminNdaEmailTemp.js";
+import userNdaEmailTemp from "../mail/userNdaEmailTemp.js";
+import investorEnquiryEmailTemp from "../mail/investorEnquiryEmailTemp.js";
+import subscriptionRemainderTemp from "../mail/subscriptionRemainderTemp.js";
 
 
 
@@ -39,6 +43,19 @@ export const sendResetPasswordEmail = async (email, data) => {
       email,
       subject: "Reset password code - PBFS Security Code",
       html: resetPassEmailTemp(data),
+    });
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(500, "Email was not sent");
+  }
+};
+
+export const sendInvestorEnquiryEmailToIdeaLister = async (email,data) => {
+  try {
+    await sendEmail({
+      email,
+      subject: "You have a new enquiry from PBFS",
+      html: investorEnquiryEmailTemp(data),
     });
   } catch (error) {
     console.log(error);
@@ -113,11 +130,24 @@ export const sendSubscriptionExpiredEmail = async (email, data) => {
   }
 };
 
-export const newBusinessListingEmail = async (email, data) => {
+export const sendSubscriptionRemainderEmail = async (email, data) => {
   try {
     await sendEmail({
       email,
-      subject: "New Business Listed on PBFS - Dont Miss Out!",
+      subject: "Your PBFS subscription plan is about to Expire!",
+      html: subscriptionRemainderTemp(data),
+    });
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(status.INTERNAL_SERVER_ERROR, error.message);
+  }
+};
+
+export const newBusinessListingEmail = async (email,sub, data) => {
+  try {
+    await sendEmail({
+      email,
+      subject: sub,
       html: newBusinessListing(data),
     });
   } catch (error) {
@@ -210,6 +240,39 @@ export const sendRejectionEmail = async (email,data) => {
       email,
       subject: "Your listing has been rejected - PBFS ",
       html: listingRejectionEmailTemp(data),
+    });
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(status.INTERNAL_SERVER_ERROR, error.message);
+  }
+};
+
+export const sendNdaEmailToAdmin = async (email,data) => {
+  try {
+    await sendEmail({
+      email,
+      subject: "An user submited a new nda agreement - PBFS ",
+      html: adminNdaEmailTemp(data),
+    });
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(status.INTERNAL_SERVER_ERROR, error.message);
+  }
+};
+
+export const sendNdaEmailToUser = async (email,data) => {
+  try {
+    await sendEmail({
+      email,
+      subject: "You have received a new nda agreement - PBFS ",
+      html: userNdaEmailTemp(data),
+      attachments: [
+        {
+          filename: "NDA-Agreement.pdf",
+          path: data.pdfPath, // absolute or relative file path
+          contentType: "application/pdf",
+        },
+      ],
     });
   } catch (error) {
     console.log(error);

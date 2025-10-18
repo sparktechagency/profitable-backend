@@ -24,12 +24,8 @@ const agreementSchema = new mongoose.Schema({
         }
     },
     phone:{
-        type: String,
+        type: Number,
         required: [true, "Mobile Number is required to create new Aggrement"],
-        validate: {
-            validator: (value) => validator.isNumeric(value),
-            message: "Valid Mobile number is required"
-        }
     },
     nidPassportNumber:{
         type: String,

@@ -30,6 +30,18 @@ export const createNewFormatService = async (req) => {
 
 
 
+//get all formation website service
+export const getAllFormationWebsiteService = async () => {
+   
+    //get all info from db
+    const allFormat = await FormationModel.find({}).lean();
+    if(!allFormat){
+        throw new ApiError(404, "Failed to get all formation");
+    }
+
+    return allFormat
+}
+
 //get all formation service
 export const getAllFormationService = async (query) => {
     let {page} = query;

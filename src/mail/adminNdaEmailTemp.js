@@ -1,4 +1,4 @@
-const makeScheduleEmail = (data) =>
+const adminNdaEmailTemp = (data) =>
   ` 
     <html>
       <head>
@@ -65,29 +65,30 @@ const makeScheduleEmail = (data) =>
           }
         </style>
       </head>
+
       <body>
         <div class="container">
           
-          <p>Hello, ${data.name}</p>
-          ${data.admin ? `<p>A new meeting scheduled by a user. Here are the details: </p>` : `<p>You have scheduled a new meeting with PBFS </p>`}
+          <p>Hello, Admin</p>
+          <p>An user submit a nda agreement. Please check it.</p>
 
-          <h3>Name: ${data.name}</h3>
-          <h3>Email: ${data.email}</h3>
-          <h3>Date: ${data.date}</h3>
-          <h3>Time: ${data.time}</h3>
-          <h3>Timezone: ${data.timeZone}</h3>
-          <h3>Topic: ${data.topic}</h3>
+          <h5> Here’s are the user details: </h5>
           
-          <p>Please make sure to attend on time</p>
-          
+          <h3>User Name: ${data.name}</h3>
+          <h3>User Email: ${data.email}</h3>
+          <h3>User Contact: ${data.phone}</h3>
+          <h3>User Role: ${data.role}</h3>
+
+          <p>Please log in to your Dashboard to see the agreement.</p>
+          <p>Login to <a href="https://admin.profitablebusinessesforsale.com/">PBFS Dashboard</a></p>
           <p>Best Regards,<br>Team PBFS</p>
+
         </div>
         <div class="footer">
           <a href="https://profitablebusinessesforsale.com/"><img src="https://pbfsimage.s3.eu-north-1.amazonaws.com/Pbfs_logo.png" class="logo-img"/></a>
-          <p> <a href="https://profitablebusinessesforsale.com/">ProfitableBusinessesForSale.com</a> | <a href="info@ProfitableBusinessesForSale.com">info@ProfitableBusinessesForSale.com</a>.</p>
+        <p> <a href="https://profitablebusinessesforsale.com/">ProfitableBusinessesForSale.com</a> | <a href="info@ProfitableBusinessesForSale.com">info@ProfitableBusinessesForSale.com</a>.</p>
           <p> Follow Us on 
             <a href="https://www.facebook.com/share/1J7PbBaf1G/?mibextid=wwXIfr">Facebook</a> |
-
             <a href="https://www.instagram.com/profitablebusinessesforsale?igsh=MTc5bTVrcWJoZHNtbQ%3D%3D&utm_source=…">Instagram</a>
           </p>
         </div>
@@ -95,6 +96,6 @@ const makeScheduleEmail = (data) =>
     </html>
   `;
 
-export default makeScheduleEmail;
+export default adminNdaEmailTemp;
 
-// <-- <a href="https://profitablebusinessesforsale.com/"><img src="uploads/logo/pbfs-logo.png" alt="PBFS" class="logo-img"/></a> -->
+// /<-- <a href="https://profitablebusinessesforsale.com/"><img src="uploads/logo/pbfs-logo.png" alt="PBFS" class="logo-img"/></a> -->

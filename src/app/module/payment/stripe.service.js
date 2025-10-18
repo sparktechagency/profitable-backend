@@ -8,11 +8,12 @@ import { errorLogger,logger} from "../../../utils/logger.js";
 import ApiError from "../../../error/ApiError.js";
 import PaymentModel from "./payment.model.js";
 import UserModel from "../user/user.model.js";
-import { sendSubscriptionEmail,sendSubscriptionExpiredEmail } from "../../../utils/emailHelpers.js";
+import { sendSubscriptionEmail,sendSubscriptionExpiredEmail,sendSubscriptionRemainderEmail } from "../../../utils/emailHelpers.js";
 import postNotification from "../../../utils/postNotification.js";
 import CouponModel from "../coupon/coupon.model.js";
 import catchAsync from "../../../utils/catchAsync.js";
 import cron from "node-cron";
+import CouponUsedModel from "../coupon/couponuse.model.js";
 // import config from "../../../config/index.js";
 // import { createToken } from "../../../utils/jwtHelpers.js";
 
@@ -261,7 +262,7 @@ export const postCheckoutService = async (userData, payload) => {
 
   //handle coupon
   if (couponCode) {
-    console.log( "Applying coupon:", couponCode );
+    // console.log( "Applying coupon:", couponCode );
       // 2️⃣ Find the coupon
       const coupon = await CouponModel.findOne({ couponCode: couponCode });
 
@@ -288,6 +289,13 @@ export const postCheckoutService = async (userData, payload) => {
         throw new ApiError(400, "Coupon usage limit exceeded. You can't use it.");
       }
 
+      //check whether user used it or not
+      const isCouponUsed = await CouponUsedModel.findOne({user: userId, coupon: couponCode}).lean();
+
+      if(isCouponUsed){
+        throw new ApiError(400,"You have already used this coupon. you can't use it for twice");
+      }
+
 
       // 5️⃣ Calculate discount
       const discountAmount = (amountInCents * coupon.discount) / 100; // discount as percentage
@@ -296,6 +304,9 @@ export const postCheckoutService = async (userData, payload) => {
       // 6️⃣ Increase usage count
       coupon.couponUsesCount = coupon.couponUsesCount + 1;
       await coupon.save();
+
+      //create a new coupon uses
+      await CouponUsedModel.create({user: userId, coupon: couponCode});
 
   }
   // console.log(amountInCents);
@@ -498,7 +509,7 @@ const updateUserSubscriptionStatus = catchAsync(async () => {
         name: user.name,
         subscriptionEndDate: user.subscriptionEndDate
       });
-      console.log("email sent to", user.email);
+      // console.log("email sent to", user.email);
   }
 
 
@@ -526,12 +537,46 @@ const updateUserSubscriptionStatus = catchAsync(async () => {
   }
 });
 
+//send subscription remainder email to every user
+const subscriptionRemainderEmail = catchAsync(async () => {
+  const now = new Date();
+  const fiveDaysFromNow = new Date();
+  fiveDaysFromNow.setDate(now.getDate() + 5);
+
+  const startOfDay = new Date(fiveDaysFromNow.setHours(0, 0, 0, 0));
+  const endOfDay = new Date(fiveDaysFromNow.setHours(23, 59, 59, 999));
+
+  //find out all user whose subscription plan will be expired after 5 days
+  const allUsers = await UserModel.find({
+    subscriptionPlan: { $ne: null },
+    subscriptionEndDate: { $gte: startOfDay, $lte: endOfDay },
+  })
+  .select("name email subscriptionEndDate")
+  .lean();
+
+  //users length 0. then no need to send email
+   if (allUsers.length === 0) {
+      console.log("No users with expiring subscriptions found today.");
+      return;
+    }
+
+    // Send email to each user
+    for (const user of allUsers) {
+      await sendSubscriptionRemainderEmail(user.email,{
+        name: user.name,
+        subscriptionEndDate: user.subscriptionEndDate
+      });
+    }
+
+});
+
 // Run cron job every day at afternoon 03:10
 cron.schedule("10 15 * * *", () => {
   
     deleteUnpaidPayments();
     updateExpiredSubscriptions();
     updateUserSubscriptionStatus();
+    subscriptionRemainderEmail();
   });
 //node cron is working perfectly
 

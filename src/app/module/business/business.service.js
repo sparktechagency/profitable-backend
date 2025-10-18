@@ -85,6 +85,7 @@ export const createNewBusinessService = async (req) => {
     validateFields(req.body,[
          "title", "category", "country", "askingPrice", "ownerShipType", "businessType"
     ]);
+    
     console.log(country,state,city,countryName);
 
     //user type and subscription wise different add business functionlity
@@ -206,7 +207,7 @@ export const createNewBusinessService = async (req) => {
     //send notification to all buyer and investor that a new business listed
     if(newBusiness){
         //send email to admin also
-        await sendAdminEmail(config.smtp.smtp_mail,{name: "Admin", title: newBusiness.title, category: newBusiness.category,country: newBusiness.countryName});
+        await sendAdminEmail(config.smtp.smtp_mail,{name: "Admin", title: newBusiness.title, category: newBusiness.category,country: newBusiness.countryName, updated: false});
 
         //send email to all buyer and investor
         // sendNotificationToAllBuyerAndInvestor(title,countryName,businessType,role);
@@ -510,11 +511,11 @@ export const getBusinessValuationService = async (req) => {
         try {
             
             const transporter = nodemailer.createTransport({
-            service: config.smtp.smtp_service,
-            auth: {
-                user: config.smtp.smtp_mail,
-                pass: config.smtp.smtp_password, // Use App Password for Gmail with 2FA
-            },
+                service: config.smtp.smtp_service,
+                auth: {
+                    user: config.smtp.smtp_mail,
+                    pass: config.smtp.smtp_password, // Use App Password for Gmail with 2FA
+                },
             });
     
             // Prepare attachments

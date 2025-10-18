@@ -1,5 +1,5 @@
 import ApiError from "../../../error/ApiError.js";
-import { sendBuyersEnquiryEmail } from "../../../utils/emailHelpers.js";
+import { sendBuyersEnquiryEmail, sendInvestorEnquiryEmailToIdeaLister } from "../../../utils/emailHelpers.js";
 import validateFields from "../../../utils/validateFields.js";
 import BusinessModel from "../business/business.model.js";
 import InterestedModel from "./interested.model.js";
@@ -21,7 +21,7 @@ export const makeAnUserInterestedService = async (req) => {
 
     //Broker and Buyer can not show interest on business ideas
     if((role === "Buyer" && business.businessRole === "Business Idea Lister") || (role === "Broker" && business.businessRole === "Business Idea Lister")){
-        throw new ApiError(400,"You can not show interest on Business Ideas");
+        throw new ApiError(400,"Only an investor can show interest on Business Ideas");
     }
 
     //check if this business is already buyer's interested list or not
@@ -39,7 +39,24 @@ export const makeAnUserInterestedService = async (req) => {
         throw new ApiError(500,"Failed to create new user interested to this Business");
     }
 
-    const seller = await BusinessModel.findById(businessId).populate({path: "user", select:"name email role subscriptionPlan subscriptionPlanPrice"}).select("title");
+    const seller = await BusinessModel.findById(businessId).populate({path: "user", select:"name email role subscriptionPlan subscriptionPlanPrice"}).select("title businessRole");
+
+    //send separate email to idea lister
+    if(role === "Investor" && seller.businessRole === "Business Idea Lister"){
+        //send notification to idea lister
+        postNotification("New Enquiry",`You have a new enquiry from ${name} about your listed business ideas. View and respond to keep the deal moving.`,seller.user._id);
+
+        //send email to idea lister
+        const emailData = {
+            sellerName: seller.user.name,
+            businessTitle: seller.title,
+            buyerName: name,
+            buyerEmail: email
+        }
+        await sendInvestorEnquiryEmailToIdeaLister(seller.user.email,emailData);
+
+        return newInterestedUser;
+    }
 
     //send notification to seller
     postNotification("New Enquiry",`You have a new inquiry from ${name} about your listed business. View and respond to keep the deal moving.`,seller.user._id);

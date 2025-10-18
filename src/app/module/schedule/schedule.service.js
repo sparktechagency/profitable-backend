@@ -1,3 +1,4 @@
+import config from "../../../config/index.js";
 import ApiError from "../../../error/ApiError.js";
 import { sendMakeScheduleEmail } from "../../../utils/emailHelpers.js";
 import postNotification from "../../../utils/postNotification.js";
@@ -35,7 +36,10 @@ export const makeAMeetingScheduleService = async (payload) => {
     await postNotification("New Meeting Scheduled",`You scheduled a meeting with PBFS at ${time} on ${date}`,userId);
 
     //send Email to user
-    await sendMakeScheduleEmail(email,{name,email,date,time,timeZone,topic});
+    await sendMakeScheduleEmail(email,{name,email,date,time,timeZone,topic,admin:false});
+    //send Email to admin
+    await sendMakeScheduleEmail(config.smtp.smtp_mail,{name,email,date,time,timeZone,topic,admin: true});
+
     return newSchedule;
 }
 

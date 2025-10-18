@@ -5,6 +5,8 @@ import validateFields from "../../../utils/validateFields.js";
 import Agreement from "./agreement.model.js";
 import createNDAFile from "../../../utils/mergePdf.js";
 import fs from "fs";
+import { sendNdaEmailToAdmin, sendNdaEmailToUser } from "../../../utils/emailHelpers.js";
+import config from "../../../config/index.js";
 
 
 export const createNewAgreement = catchAsync(
@@ -31,6 +33,11 @@ export const createNewAgreement = catchAsync(
 
         if(!agreement) throw new ApiError(500," Failed to create new aggremt");
 
+        //send email to admin and user
+        await sendNdaEmailToAdmin(config.smtp.smtp_mail,{name,email,phone,role});
+        await sendNdaEmailToUser(email,{name,pdfPath});
+
+        //delete all unused file
         files.forEach(file => fs.unlinkSync(file.path));
 
         sendResponse(res,{
@@ -80,11 +87,14 @@ export const deleteAgreement = catchAsync(
         if(!agreementId) throw new ApiError(400,"Agreement Id is required to delete an agreement");
 
         const agreement = await Agreement.findByIdAndDelete(agreementId);
+
         if(!agreement) throw new ApiError(404,"No agreement found");
+        
         //delete the nda file also
         if(agreement.nda && fs.existsSync(agreement.nda)){
             fs.unlinkSync(agreement.nda);
         }
+        
         sendResponse(res,{
             statusCode: 200,
             success: true,

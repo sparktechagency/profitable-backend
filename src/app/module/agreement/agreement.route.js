@@ -27,7 +27,7 @@ const storage = multer.diskStorage({
 const uploadPdf = multer({
   storage: storage, // temp storage, or you can use diskStorage for custom names
   limits: {
-    fileSize: 1 * 1024 * 1024, // 1MB max per file
+    fileSize: 5 * 1024 * 1024, // 3MB max per file
   },
 
   fileFilter: (req, file, cb) => {

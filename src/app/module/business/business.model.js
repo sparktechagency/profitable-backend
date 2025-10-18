@@ -10,21 +10,21 @@ const businessSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        required: [true, "Business image is required"],
+        required: [true, "Business image is required to list a new business"],
     },
     title: {
         type: String,
-        required: [true, "Business title is required"]
+        required: [true, "Business title is required to list a new business"]
     },
     //
     businessRole:{
         type: String,
-        required: [true, "business role is required"],
+        required: [true, "business role is required to list new business"],
         enum:["Seller","Francise Seller","Asset Seller","Business Idea Lister","Broker"]
     },
     category: {
         type: String,
-        required: [true, "Business category is required"]
+        required: [true, "Business category is required to list anew business"]
     },
     subCategory: {
         type: String,
@@ -32,7 +32,7 @@ const businessSchema = new mongoose.Schema({
     },
     country: {
         type: String,
-        required: [true, "Business country is required"]
+        required: [true, "Business country is required to list a new business"]
     },
     state: {
         type: String,
@@ -48,7 +48,7 @@ const businessSchema = new mongoose.Schema({
     },
     askingPrice: {
         type: String,
-        required: [true, "Business asking price is required"]
+        required: [true, "Business asking price is required to list a new business"]
     },
     price:{
         type: Number,
@@ -56,11 +56,11 @@ const businessSchema = new mongoose.Schema({
     },
     ownerShipType: {
         type: String,
-        required: [true, "Business ownership type is required"]
+        required: [true, "Business ownership type is required to list a new business"]
     },
     businessType: {
         type: String,
-        required: [true, "Business business type is required"]
+        required: [true, "Business type is required to list a new business"]
     },
     reason: {
         type: String

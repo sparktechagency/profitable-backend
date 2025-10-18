@@ -1,4 +1,4 @@
-const makeScheduleEmail = (data) =>
+const subscriptionRemainderTemp = (data) =>
   ` 
     <html>
       <head>
@@ -65,26 +65,21 @@ const makeScheduleEmail = (data) =>
           }
         </style>
       </head>
+
       <body>
         <div class="container">
           
           <p>Hello, ${data.name}</p>
-          ${data.admin ? `<p>A new meeting scheduled by a user. Here are the details: </p>` : `<p>You have scheduled a new meeting with PBFS </p>`}
-
-          <h3>Name: ${data.name}</h3>
-          <h3>Email: ${data.email}</h3>
-          <h3>Date: ${data.date}</h3>
-          <h3>Time: ${data.time}</h3>
-          <h3>Timezone: ${data.timeZone}</h3>
-          <h3>Topic: ${data.topic}</h3>
+          <p>Your subscription with ProfitableBusinessesForSale.com is going to expire on ${new Date(data.subscriptionEndDate).toLocaleDateString('en-GB')}. </p>
+          <p> Don’t miss out on buyer leads, premium listings, and investor access. <br>
+              Renew your subscription plan before expiration to continue enjoying all the benefits. </p>
           
-          <p>Please make sure to attend on time</p>
-          
+          <p>Renew <a href="https://profitablebusinessesforsale.com/">Subscription</a></p>
           <p>Best Regards,<br>Team PBFS</p>
         </div>
         <div class="footer">
           <a href="https://profitablebusinessesforsale.com/"><img src="https://pbfsimage.s3.eu-north-1.amazonaws.com/Pbfs_logo.png" class="logo-img"/></a>
-          <p> <a href="https://profitablebusinessesforsale.com/">ProfitableBusinessesForSale.com</a> | <a href="info@ProfitableBusinessesForSale.com">info@ProfitableBusinessesForSale.com</a>.</p>
+        <p> <a href="https://profitablebusinessesforsale.com/">ProfitableBusinessesForSale.com</a> | <a href="info@ProfitableBusinessesForSale.com">info@ProfitableBusinessesForSale.com</a>.</p>
           <p> Follow Us on 
             <a href="https://www.facebook.com/share/1J7PbBaf1G/?mibextid=wwXIfr">Facebook</a> |
 
@@ -95,6 +90,6 @@ const makeScheduleEmail = (data) =>
     </html>
   `;
 
-export default makeScheduleEmail;
+export default subscriptionRemainderTemp;
 
 // <-- <a href="https://profitablebusinessesforsale.com/"><img src="uploads/logo/pbfs-logo.png" alt="PBFS" class="logo-img"/></a> -->

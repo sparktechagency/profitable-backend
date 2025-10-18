@@ -96,7 +96,7 @@ const userSchema = new mongoose.Schema({
     subscriptionEndDate:{
         type: Date,
         default: null
-    }
+    },
 },{
     timestamps: true
 });

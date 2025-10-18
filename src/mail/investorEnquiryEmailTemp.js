@@ -1,4 +1,4 @@
-const buyerEnquiryEmailTemp = (data) => `
+const investorEnquiryEmailTemp = (data) => `
   <html>
     <head>
       <style>
@@ -69,13 +69,13 @@ const buyerEnquiryEmailTemp = (data) => `
       <div class="container">
         
         <p>Hello, ${data.sellerName}</p>
-        <p>Good news! A buyer has shown interest in your business listed on ProfitableBusinessesForSale.com.</p>
-        ${!data.businessTitle ? `<p>To receive the details of new interested user, you have to buy  subscription plan</p>`  : `
-            <h3>Business: ${data.businessTitle}</h3>
-            <h3>Buyer Name: ${data.buyerName}</h3>
-            <h3>Buyer Email: ${data.buyerEmail}</h3>
-          `
-        }
+        <p>Good news! an Investor has shown interest in your business ideas listed on ProfitableBusinessesForSale.com.</p>
+
+        
+        <h3>Business Idea: ${data.businessTitle}</h3>
+        <h3>Investor Name: ${data.buyerName}</h3>
+        <h3>Investor Email: ${data.buyerEmail}</h3>
+        
         <p>Please log in to your account to view the enquiry and respond securely.</p>
         <p>Login to <a href="https://profitablebusinessesforsale.com/">PBFS</a></p>
         <p>Best Regards,<br>Team PBFS</p>
@@ -93,6 +93,6 @@ const buyerEnquiryEmailTemp = (data) => `
   </html>
 `;
 
-export default buyerEnquiryEmailTemp;
+export default investorEnquiryEmailTemp;
 
 //<-- <a href="https://profitablebusinessesforsale.com/"><img src="uploads/logo/pbfs-logo.png" alt="PBFS" class="logo-img"/></a> -->

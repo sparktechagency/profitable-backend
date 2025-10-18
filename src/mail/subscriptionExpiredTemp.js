@@ -70,7 +70,7 @@ const subscriptionExpiredTemp = (data) =>
         <div class="container">
           
           <p>Hello, ${data.name}</p>
-          <p>Your subscription with ProfitableBusinessesForSale.com has expired on ${data.subscriptionEndDate.getDate()}. </p>
+          <p>Your subscription with ProfitableBusinessesForSale.com has expired on ${new Date(data.subscriptionEndDate).toLocaleDateString('en-GB')}. </p>
           <p> Don’t miss out on buyer leads, premium listings, and investor access. <br>
               Renew now to continue enjoying all the benefits. </p>
           

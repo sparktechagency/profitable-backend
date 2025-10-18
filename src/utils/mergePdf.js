@@ -20,7 +20,7 @@ async function addSignature(pdfDoc, signaturePath,user) {
   lastPage.drawText(`Name: ${user.name}`, { x: 50, y: 620, size: 14});
   lastPage.drawText(`Email: ${user.email}`, { x: 50, y: 595, size: 14});
   lastPage.drawText(`Mobile: ${user.phone}`, { x: 50, y: 570, size: 14});
-  lastPage.drawText(`Nid/Passposr: ${user.nidPassportNumber}`, { x: 50, y: 545, size: 14 });
+  lastPage.drawText(`Nid/Passport: ${user.nidPassportNumber}`, { x: 50, y: 545, size: 14 });
 
   //second party
   lastPage.drawText("Second Party: ProfitableBusinessForSale.com", {x: 50, y: 460, size: 16, });

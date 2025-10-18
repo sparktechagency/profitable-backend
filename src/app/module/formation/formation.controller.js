@@ -1,6 +1,6 @@
 import catchAsync from "../../../utils/catchAsync.js";
 import sendResponse from "../../../utils/sendResponse.js";
-import { createNewFormatService, deleteFormatservice, getAllFormationService, makeUserInterestedToFormationService, SingleFormationService, updateFormationService } from "./formation.service.js";
+import { createNewFormatService, deleteFormatservice, getAllFormationService, getAllFormationWebsiteService, makeUserInterestedToFormationService, SingleFormationService, updateFormationService } from "./formation.service.js";
 
 
 
@@ -16,6 +16,20 @@ export const createNewFormat = catchAsync( async (req,res) => {
         message: "New formation created successfully",
         data: result
     })
+});
+
+//api ending point to get all formation website
+export const getAllFormationWebsite = catchAsync( async (req,res) => {
+
+    const response = await getAllFormationWebsiteService();
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Successfully got all formation",
+        data: response
+    });
+
 });
 
 //api ending point to get all formation

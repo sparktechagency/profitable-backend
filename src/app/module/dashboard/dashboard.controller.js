@@ -12,7 +12,25 @@ import { sendListingConfirmationEmail, sendRejectionEmail,newBusinessListingEmai
 //utility function 
 // to send email to all buyer and investor when a new business listed
 const sendNotificationToAllBuyerAndInvestor = async (title,country,businessType,role) => {
+    //fixed email subject
+    let subject;
+    switch(role){
+        case "Seller":
+            subject = "New Business Listed on PBFS - Dont Miss Out!";
+        case "Broker":
+            subject = "New Business Listed on PBFS - Dont Miss Out!";
+        case "Asset Seller":
+            subject = "New Asset Listed on PBFS - Dont Miss Out!";
+        case "Francise Seller":
+            subject = "New Francise Listed on PBFS - Dont Miss Out!";
+        case "Business Idea Lister":
+            subject = "New Business Idea Listed on PBFS - Dont Miss Out!";
+        default:
+            subject = "New Business Listed on PBFS - Dont Miss Out!";
+    }
+
     console.log("Sending email to all buyer and investor");
+    
     //find out all buyer and investor who has subscription plan
     if(role === "Business Idea Lister"){
         const users = await UserModel.find({role: "Investor",subscriptionPlanPrice: { $gt: 0 }}).select("name email").lean();
@@ -25,7 +43,7 @@ const sendNotificationToAllBuyerAndInvestor = async (title,country,businessType,
                     `Business Idea: ${title}, location: ${country},`,
                     user._id
                 );
-                await newBusinessListingEmail(user.email, {
+                await newBusinessListingEmail(user.email,subject, {
                     name: user.name,
                     title,
                     country,
@@ -38,7 +56,7 @@ const sendNotificationToAllBuyerAndInvestor = async (title,country,businessType,
     }
     else {
 
-        const users = await UserModel.find({role: { $in: ["Buyer","Investor"]},subscriptionPlanPrice: { $gt: 0 }}).select("name email").lean();
+        const users = await UserModel.find({role: { $in: ["Buyer","Investor","Broker"]},subscriptionPlanPrice: { $gt: 0 }}).select("name email").lean();
     
         //now send notification to all buyer and investor
         if(users.length > 0){
@@ -48,7 +66,7 @@ const sendNotificationToAllBuyerAndInvestor = async (title,country,businessType,
                     `Business : ${title}, location: ${country},`,
                     user._id
                 );
-                await newBusinessListingEmail(user.email, {
+                await newBusinessListingEmail(user.email,subject, {
                     name: user.name,
                     title,
                     country,
@@ -176,7 +194,7 @@ export const getAllUsers = catchAsync( async (req,res) => {
 
     const skip = (page - 1) * limit;
    
-    const users = await UserModel.find({}).populate({
+    const users = await UserModel.find({role: {$ne: "Admin"}}).populate({
         path: "subscriptionPlan", select: "subscriptionPlanType"
     }).select('name email mobile country role isBlocked').sort({createdAt: -1}).skip(skip).limit(limit);
 
@@ -192,6 +210,30 @@ export const getAllUsers = catchAsync( async (req,res) => {
         message: "Got all user",
         meta:{page,limit: 10,total, totalPage},
         data: users
+    });
+});
+
+
+//api ending point to delete a user
+export const deleteUser = catchAsync( async (req,res) => {
+    
+    const {userId} = req.params;
+
+    if(!userId){
+        throw new ApiError(400,"User id is required to delete a user");
+    }
+
+    const user = await UserModel.findByIdAndDelete(userId);
+
+    if(!user){
+        throw new ApiError(500, "Failed to delete a user");
+    }
+
+    sendResponse(res,{
+        statusCode: 200,
+        success: true,
+        message: "Deleted a user successfully",
+        data: user
     });
 });
 
@@ -385,7 +427,7 @@ export const allListedBusiness = catchAsync( async (req,res) => {
             filter = { businessRole: "Broker", isApproved: true };
             break;
         default:
-            filter = {}; // optional fallback
+            filter = {isApproved: true}; // optional fallback
     }
 
     const business = await BusinessModel.find(filter).populate({path: "user", select:"name email image"}).sort({ createdAt: -1 }).skip(skip).limit(limit);

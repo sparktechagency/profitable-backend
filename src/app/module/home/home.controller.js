@@ -152,6 +152,7 @@ export const gettermsAndCondition = catchAsync(
         });
     }
 );
+
 //api ending point to create terms and condition
 export const updatePrivacyPolicy = catchAsync(
     async (req,res) => {

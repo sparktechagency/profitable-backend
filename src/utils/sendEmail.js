@@ -23,7 +23,7 @@ const sendEmail = async (options) => {
     },
   });
 
-  const { email, subject, html } = options;
+  const { email, subject, html, attachments = [] } = options;
 
   const mailOptions = {
     from: `${config.smtp.NAME} <${config.smtp.smtp_mail}>`,
@@ -32,6 +32,7 @@ const sendEmail = async (options) => {
     signed_by: "bdCalling.com",
     subject,
     html,
+    attachments
   };
 
   await transporter.sendMail(mailOptions);

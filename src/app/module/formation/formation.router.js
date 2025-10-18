@@ -1,7 +1,7 @@
 import express from "express";
 import multer from "multer";
 import path from "path";
-import { createNewFormat, deleteFormation, getAllFormation, getAllUsersInterestedToFormation, makeUserInterestedToFormation, singleFormationDetails, updateFormation } from "./formation.controller.js";
+import { createNewFormat, deleteFormation, getAllFormation, getAllFormationWebsite, getAllUsersInterestedToFormation, makeUserInterestedToFormation, singleFormationDetails, updateFormation } from "./formation.controller.js";
 
 
 const formationRouter = express.Router();
@@ -45,6 +45,7 @@ var upload = multer({
 //upload.single("image");
 
 formationRouter.post("/create-format", upload.single("formation-image"), createNewFormat);
+formationRouter.get("/get-all-format-website", getAllFormationWebsite);
 formationRouter.get("/get-all-format", getAllFormation);
 formationRouter.get("/single-format", singleFormationDetails);
 formationRouter.patch("/update-format", upload.single("formation-image"), updateFormation);
