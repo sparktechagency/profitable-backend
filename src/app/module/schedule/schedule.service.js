@@ -8,7 +8,7 @@ import ScheduleModel from "./schedule.model.js";
 
 //make a meeting schedule service
 export const makeAMeetingScheduleService = async (payload) => {
-    const {userId, name,email,date,time,timeZone,topic,note} = payload;
+    const {userId, name,email,date,time,timeZone,phone,topic,note} = payload;
 
     if(!userId){
         throw new ApiError(400,"You have to log in first to make a meeting schedule");
@@ -16,12 +16,12 @@ export const makeAMeetingScheduleService = async (payload) => {
 
     //validate all the fields are available or not
     validateFields(payload,[
-        "name","email","date","time","timeZone","topic"
+        "name","email","date","time","timeZone","phone","topic"
     ]);
 
     //now make a new schedule 
     const newSchedule = await ScheduleModel.create({
-        user: userId, name,email,date,time,timeZone,topic,note
+        user: userId, name,email,date,time,timeZone,phone,topic,note
     });
 
     if(!newSchedule){
@@ -36,9 +36,9 @@ export const makeAMeetingScheduleService = async (payload) => {
     await postNotification("New Meeting Scheduled",`You scheduled a meeting with PBFS at ${time} on ${date}`,userId);
 
     //send Email to user
-    await sendMakeScheduleEmail(email,{name,email,date,time,timeZone,topic,admin:false});
+    await sendMakeScheduleEmail(email,{name,email,date,time,timeZone,phone,topic,note,admin:false});
     //send Email to admin
-    await sendMakeScheduleEmail(config.smtp.smtp_mail,{name,email,date,time,timeZone,topic,admin: true});
+    await sendMakeScheduleEmail(config.smtp.smtp_mail,{name,email,date,time,timeZone,phone,topic,note,admin: true});
 
     return newSchedule;
 }

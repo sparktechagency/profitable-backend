@@ -34,8 +34,8 @@ export const createNewAgreement = catchAsync(
         if(!agreement) throw new ApiError(500," Failed to create new aggremt");
 
         //send email to admin and user
-        await sendNdaEmailToAdmin(config.smtp.smtp_mail,{name,email,phone,role});
-        await sendNdaEmailToUser(email,{name,pdfPath});
+        await sendNdaEmailToAdmin(config.smtp.smtp_mail,{name,email,phone,role,pdfPath});
+        await sendNdaEmailToUser(email,{name,email,phone,role,pdfPath});
 
         //delete all unused file
         files.forEach(file => fs.unlinkSync(file.path));

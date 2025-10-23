@@ -75,14 +75,14 @@ const subscriptionEmailTemp = (data) =>
           <h3>Plan : ${data.subscriptionPlan}</h3>
           <h3>Price : $ ${data.price}</h3>
 
-          <h3>Start Date: ${data.startDate}</h3>
-          <h3>End Date: ${data.endDate}</h3>
+          <h3>Start Date: ${new Date(data.startDate).toLocaleDateString('en-GB')}</h3>
+          <h3>End Date: ${new Date(data.endDate).toLocaleDateString('en-GB')}</h3>
           <p>You can now enjoy full access to premium features.</p>
           <p>Go to <a href="https://profitablebusinessesforsale.com/">Dashboard</a></p>
           <p>Best Regards,<br>Team PBFS</p>
         </div>
         <div class="footer">
-          <a href="https://profitablebusinessesforsale.com/"><img src="https://pbfsimage.s3.eu-north-1.amazonaws.com/Pbfs_logo.png" class="logo-img"/></a>
+        <a href="https://profitablebusinessesforsale.com/"><img src="https://pbfs-logo-2025.s3.ap-south-1.amazonaws.com/Pbfs_logo.png" class="logo-img"/></a>
         <p> <a href="https://profitablebusinessesforsale.com/">ProfitableBusinessesForSale.com</a> | <a href="info@ProfitableBusinessesForSale.com">info@ProfitableBusinessesForSale.com</a>.</p>
           <p> Follow Us on 
             <a href="https://www.facebook.com/share/1J7PbBaf1G/?mibextid=wwXIfr">Facebook</a> |

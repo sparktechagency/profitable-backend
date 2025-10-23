@@ -74,6 +74,7 @@ const buyerEnquiryEmailTemp = (data) => `
             <h3>Business: ${data.businessTitle}</h3>
             <h3>Buyer Name: ${data.buyerName}</h3>
             <h3>Buyer Email: ${data.buyerEmail}</h3>
+            <h3>Buyer Mobile: ${data.buyerPhone}</h3>
           `
         }
         <p>Please log in to your account to view the enquiry and respond securely.</p>
@@ -81,7 +82,7 @@ const buyerEnquiryEmailTemp = (data) => `
         <p>Best Regards,<br>Team PBFS</p>
       </div>
       <div class="footer">
-       <a href="https://profitablebusinessesforsale.com/"><img src="https://pbfsimage.s3.eu-north-1.amazonaws.com/Pbfs_logo.png" class="logo-img"/></a>
+       <a href="https://profitablebusinessesforsale.com/"><img src="https://pbfs-logo-2025.s3.ap-south-1.amazonaws.com/Pbfs_logo.png" class="logo-img"/></a>
        <p> <a href="https://profitablebusinessesforsale.com/">ProfitableBusinessesForSale.com</a> | <a href="info@ProfitableBusinessesForSale.com">info@ProfitableBusinessesForSale.com</a>.</p>
         <p> Follow Us on 
           <a href="https://www.facebook.com/share/1J7PbBaf1G/?mibextid=wwXIfr">Facebook</a> |

@@ -72,7 +72,7 @@ const userNdaEmailTemp = (data) =>
           <p>Hello, ${data.name}</p>
           <p>You have just submitted a nda agreement</p>
 
-          <h5> Here’s are the details: </h5>
+          <h5> Here are the details: </h5>
           
           <h3>User Name: ${data.name}</h3>
           <h3>User Email: ${data.email}</h3>
@@ -85,7 +85,7 @@ const userNdaEmailTemp = (data) =>
 
         </div>
         <div class="footer">
-          <a href="https://profitablebusinessesforsale.com/"><img src="https://pbfsimage.s3.eu-north-1.amazonaws.com/Pbfs_logo.png" class="logo-img"/></a>
+        <a href="https://profitablebusinessesforsale.com/"><img src="https://pbfs-logo-2025.s3.ap-south-1.amazonaws.com/Pbfs_logo.png" class="logo-img"/></a>
         <p> <a href="https://profitablebusinessesforsale.com/">ProfitableBusinessesForSale.com</a> | <a href="info@ProfitableBusinessesForSale.com">info@ProfitableBusinessesForSale.com</a>.</p>
           <p> Follow Us on 
             <a href="https://www.facebook.com/share/1J7PbBaf1G/?mibextid=wwXIfr">Facebook</a> |

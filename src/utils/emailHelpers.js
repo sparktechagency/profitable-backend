@@ -253,6 +253,13 @@ export const sendNdaEmailToAdmin = async (email,data) => {
       email,
       subject: "An user submited a new nda agreement - PBFS ",
       html: adminNdaEmailTemp(data),
+      attachments: [
+        {
+          filename: "NDA-Agreement.pdf",
+          path: data.pdfPath, // absolute or relative file path
+          contentType: "application/pdf",
+        },
+      ],
     });
   } catch (error) {
     console.log(error);

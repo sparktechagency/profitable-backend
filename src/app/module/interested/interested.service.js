@@ -15,7 +15,7 @@ export const makeAnUserInterestedService = async (req) => {
     // console.log(req.body);
 
     //check if all the fields are available
-    validateFields(req.body,["businessId","name","email","businessRole"]);
+    validateFields(req.body,["businessId","name","email","mobile","businessRole"]);
 
     const business = await BusinessModel.findById(businessId).select("title businessRole").lean();
 
@@ -51,7 +51,8 @@ export const makeAnUserInterestedService = async (req) => {
             sellerName: seller.user.name,
             businessTitle: seller.title,
             buyerName: name,
-            buyerEmail: email
+            buyerEmail: email,
+            buyerPhone: mobile
         }
         await sendInvestorEnquiryEmailToIdeaLister(seller.user.email,emailData);
 
@@ -68,7 +69,8 @@ export const makeAnUserInterestedService = async (req) => {
             sellerName: seller.user.name,
             businessTitle: seller.title,
             buyerName: name,
-            buyerEmail: email
+            buyerEmail: email,
+            buyerPhone: mobile
         }
         await sendBuyersEnquiryEmail(seller.user.email,emailData);
         console.log("Email sent for buyer enquery");

@@ -26,6 +26,11 @@ const scheduleSchema = new mongoose.Schema({
         type: String,
         required: [true, "Timezone is required"]
     },
+    phone:{
+        type: String,
+        required: [true, "Phone is required is required"]
+    },
+
     topic:{
         type: String,
         required: [true, "Meeting Topic is required"]

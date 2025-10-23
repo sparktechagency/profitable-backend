@@ -76,14 +76,16 @@ const makeScheduleEmail = (data) =>
           <h3>Date: ${data.date}</h3>
           <h3>Time: ${data.time}</h3>
           <h3>Timezone: ${data.timeZone}</h3>
+          <h3>Contact No.: ${data.phone}</h3>
           <h3>Topic: ${data.topic}</h3>
+          <h3>Note: ${data.note}</h3>
           
           <p>Please make sure to attend on time</p>
           
           <p>Best Regards,<br>Team PBFS</p>
         </div>
         <div class="footer">
-          <a href="https://profitablebusinessesforsale.com/"><img src="https://pbfsimage.s3.eu-north-1.amazonaws.com/Pbfs_logo.png" class="logo-img"/></a>
+          <a href="https://profitablebusinessesforsale.com/"><img src="https://pbfs-logo-2025.s3.ap-south-1.amazonaws.com/Pbfs_logo.png" class="logo-img"/></a>
           <p> <a href="https://profitablebusinessesforsale.com/">ProfitableBusinessesForSale.com</a> | <a href="info@ProfitableBusinessesForSale.com">info@ProfitableBusinessesForSale.com</a>.</p>
           <p> Follow Us on 
             <a href="https://www.facebook.com/share/1J7PbBaf1G/?mibextid=wwXIfr">Facebook</a> |

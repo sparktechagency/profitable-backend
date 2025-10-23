@@ -29,7 +29,7 @@ const interestedSchema = new mongoose.Schema({
     },
     mobile :{
         type: String,
-        // required: true
+        required: [true, "Mobile number is required"]
     },
     sector :{
         type: String,
