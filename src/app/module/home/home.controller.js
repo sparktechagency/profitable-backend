@@ -108,7 +108,7 @@ export const helpAndSupportController = catchAsync(
         sendResponse(res,{
             statusCode: 200,
             success: true,
-            message: "Thank you for reaching out! The PBFS team will respond to you soon",
+            message: "Thank you for reaching out! The PBFS team will respond to you soon.",
            
         });
 

@@ -67,6 +67,7 @@ const adminNdaEmailTemp = (data) =>
       </head>
 
       <body>
+      
         <div class="container">
           
           <p>Hello, Admin</p>

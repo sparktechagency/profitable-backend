@@ -194,13 +194,12 @@ export const getAllUsers = catchAsync( async (req,res) => {
 
     const skip = (page - 1) * limit;
    
-    const users = await UserModel.find({role: {$ne: "Admin"}}).populate({
-        path: "subscriptionPlan", select: "subscriptionPlanType"
-    }).select('name email mobile country role isBlocked').sort({createdAt: -1}).skip(skip).limit(limit);
+    let users = await UserModel.find({role: {$ne: "Admin"}}).select('name email mobile country role isBlocked subscriptionPlan subscriptionPlanType').sort({createdAt: -1}).skip(skip).limit(limit);
+
 
     if(!users) throw new ApiError(500, "No user found. Server Error");
     
-    const total = await UserModel.countDocuments();
+    const total = await UserModel.countDocuments({role: {$ne: "Admin"}});
     const totalPage = Math.ceil(total / limit);
     
 

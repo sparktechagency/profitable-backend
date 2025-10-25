@@ -126,7 +126,7 @@ const updatePaymentAndRelatedAndSendMail = async (webhookEventData) => {
       updateUserData = {
         $set: {
           // isSubscribed: true,
-          subscriptionPlanType: payment.duration,
+          subscriptionPlanType: userRole.subscriptionPlan.subscriptionPlanType,
           subscriptionPlanPrice: payment.amount ,
           subscriptionPlan: payment.subscriptionPlan,
           subscriptionStartDate: payment.subscriptionStartDate,
@@ -286,7 +286,7 @@ export const postCheckoutService = async (userData, payload) => {
       //     throw new ApiError(400, "Coupon usage limit exceeded. you can't use it.");
       // }
       if (coupon.usageLimit !== "unlimited" && !isNaN(Number(coupon.usageLimit)) && coupon.couponUsesCount >= Number(coupon.usageLimit)) {
-        throw new ApiError(400, "Coupon usage limit exceeded. You can't use it.");
+        throw new ApiError(400, "Coupon usage limit exceeded. You can't use it now.");
       }
 
       //check whether user used it or not
@@ -300,6 +300,7 @@ export const postCheckoutService = async (userData, payload) => {
       // 5️⃣ Calculate discount
       const discountAmount = (amountInCents * coupon.discount) / 100; // discount as percentage
       amountInCents = amountInCents - discountAmount;
+      amount = amountInCents / 100;
 
       // 6️⃣ Increase usage count
       coupon.couponUsesCount = coupon.couponUsesCount + 1;
