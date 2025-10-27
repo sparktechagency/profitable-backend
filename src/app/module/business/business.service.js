@@ -113,7 +113,23 @@ export const createNewBusinessService = async (req) => {
 
         //send notification to admin and user
         postNotification("New Listing Request",`${user.name} listed a new business: ${title}`);
-        postNotification('Your business listed successfully','Now wait for admins approval', user._id);
+
+        //send notification to user
+        switch(role){
+            case "Seller":
+                postNotification('Your business listed successfully','Your business Listing has been submitted for admin approval', user._id);
+            case "Broker":
+                postNotification('Your business listed successfully','Your business Listing has been submitted for admin approval', user._id);
+            case "Asset Seller":
+                postNotification('Your asset listed successfully','Your asset Listing has been submitted for admin approval', user._id);
+            case "Francise Seller":
+                postNotification('Your franchise listed successfully','Your Franchise Listing has been submitted for admin approval', user._id);
+            case "Business Idea Lister":
+                postNotification('Your business idea listed successfully','Your business idea has been submitted for admin approval', user._id);
+                
+            default:
+                postNotification('Your business listed successfully','Your business Listing has been submitted for admin approval', user._id);
+        }
 
         return newBusiness;
     }
