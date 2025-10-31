@@ -70,7 +70,7 @@ const userNdaEmailTemp = (data) =>
         <div class="container">
           
           <p>Hello, ${data.name}</p>
-          <p>You have just submitted a nda agreement</p>
+          <p>You have just submitted a NDA agreement</p>
 
           <h5> Here are the details: </h5>
           
@@ -79,7 +79,7 @@ const userNdaEmailTemp = (data) =>
           <h3>User Contact: ${data.phone}</h3>
           <h3>User Role: ${data.role}</h3>
 
-          <p>A copy of the agreement is attched with this email.</p>
+          <p>A copy of the agreement is attached with this email.</p>
           <p>Login to <a href="https://profitablebusinessesforsale.com/">PBFS</a></p>
           <p>Best Regards,<br>Team PBFS</p>
 

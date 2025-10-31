@@ -105,8 +105,8 @@ const updatePaymentAndRelatedAndSendMail = async (webhookEventData) => {
 
     // update user subscription
     // calculate and stamp subscriptionStartDate and subscriptionEndDate date based on the duration
-    const subscriptionStartDate = new Date();
-    const subscriptionEndDate = getEndDate(payment.subscriptionPlan.duration || "6 Months");
+    // const subscriptionStartDate = new Date();
+    // const subscriptionEndDate = getEndDate(payment.subscriptionPlan.duration || "6 Months");
 
     let updateUserData;
     if(userRole.user.role === "Broker"){
@@ -135,16 +135,17 @@ const updatePaymentAndRelatedAndSendMail = async (webhookEventData) => {
       };
     }
 
+    //update user
     const updatedUser = await UserModel.findByIdAndUpdate(payment.user,updateUserData,{ new: true });
 
     // send email to user
     const emailData = {
       name: updatedUser.name,
-      subscriptionPlan: payment.subscriptionPlan.subscriptionPlanType,
+      subscriptionPlan: updatedUser.subscriptionPlanType,
       price: payment.amount,
       currency: "USD",
-      startDate: subscriptionStartDate,
-      endDate: subscriptionEndDate,
+      startDate: updatedUser.subscriptionStartDate,
+      endDate: updatedUser.subscriptionEndDate,
       // payment_intent_id: payment_intent,
     };
 

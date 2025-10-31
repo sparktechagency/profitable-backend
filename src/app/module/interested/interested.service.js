@@ -11,7 +11,7 @@ import postNotification from "../../../utils/postNotification.js";
 export const makeAnUserInterestedService = async (req) => {
     const role = req.user.role;
     
-    const {businessId,userId,name,countryCode,mobile,sector,activity,email,serviceZone,message,businessRole} = req.body;
+    const {businessId,userId,name,mobile,sector,activity,email,serviceZone,message,businessRole} = req.body;
     // console.log(req.body);
 
     //check if all the fields are available
@@ -32,7 +32,7 @@ export const makeAnUserInterestedService = async (req) => {
     } 
 
     const newInterestedUser = await InterestedModel.create({
-        businessId,userId: req.user.userId,businessRole,userRole: role,name,countryCode,mobile,sector,activity,email,serviceZone,message
+        businessId,userId: req.user.userId,businessRole,userRole: role,name,mobile,sector,activity,email,serviceZone,message
     });
 
     if(!newInterestedUser){

@@ -24,9 +24,6 @@ const interestedSchema = new mongoose.Schema({
         type: String,
        
     },
-    countryCode:{
-        type: String,
-    },
     mobile :{
         type: String,
         required: [true, "Mobile number is required"]
