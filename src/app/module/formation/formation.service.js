@@ -12,13 +12,31 @@ export const createNewFormatService = async (req) => {
     if(req.file){
         imgName = req.file.filename;
     }
-    const { title, detail } = req.body;
+    let { title, detail, metaTitle,metaDescription,metaKeywords } = req.body;
 
     //check if all necessery fields are availablr or not
     validateFields(req.body,["title","detail"]);
 
+    // ✅ Parse metaKeywords properly
+    if (typeof metaKeywords === "string") {
+        try {
+            const parsed = JSON.parse(metaKeywords);
+
+            // If parsed is an array, use it. Otherwise, convert CSV string to array.
+            if (Array.isArray(parsed)) {
+                metaKeywords = parsed.map((k) => k.trim());
+            } else {
+                metaKeywords = metaKeywords.split(",").map((k) => k.trim());
+            }
+        } catch (err) {
+            // fallback if JSON.parse fails
+            metaKeywords = metaKeywords.split(",").map((k) => k.trim());
+        }
+    }
+    // console.log(metaKeywords);
+
     //create new format
-    const newFormat = await FormationModel.create({image: imgName, title, detail});
+    const newFormat = await FormationModel.create({image: imgName, title, detail, metaTitle,metaDescription, metaKeywords});
 
     if(!newFormat){
         throw new ApiError(500,"Failed to create new formation");

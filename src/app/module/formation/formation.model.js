@@ -14,6 +14,21 @@ const formationSchema = new mongoose.Schema({
     detail: {
         type: String,
         required: [true, "Format details are required"]
+    },
+    metaTitle: {
+      type: String,
+      trim: true,
+    // maxlength: [60, "Meta title should not exceed 60 characters"], 
+      // good SEO practice
+    },
+    metaDescription: {
+      type: String,
+      trim: true,
+    //maxlength: [160, "Meta description should not exceed 160 characters"],
+    },
+    metaKeywords: {
+      type: Array, // store as array of keywords
+      default: [],
     }
     
 },{ timestamps: true} );
