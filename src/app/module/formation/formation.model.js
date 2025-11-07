@@ -1,38 +1,51 @@
 import mongoose from "mongoose";
+import slugify from "slugify";
 
-
-const formationSchema = new mongoose.Schema({
-
+const formationSchema = new mongoose.Schema(
+  {
     image: {
-        type: String,
-        required: [true,"Format image is required"]
+      type: String,
+      required: [true, "Format image is required"],
     },
     title: {
-        type: String,
-        required: [true, "Format title is required"]
+      type: String,
+      required: [true, "Format title is required"],
+    },
+    slug: {
+      type: String,
+      unique: true,
+      lowercase: true,
+      index: true,
     },
     detail: {
-        type: String,
-        required: [true, "Format details are required"]
+      type: String,
+      required: [true, "Format details are required"],
     },
     metaTitle: {
       type: String,
       trim: true,
-    // maxlength: [60, "Meta title should not exceed 60 characters"], 
-      // good SEO practice
     },
     metaDescription: {
       type: String,
       trim: true,
-    //maxlength: [160, "Meta description should not exceed 160 characters"],
     },
     metaKeywords: {
-      type: Array, // store as array of keywords
+      type: Array,
       default: [],
-    }
-    
-},{ timestamps: true} );
+    },
+  },
+  { timestamps: true }
+);
 
+formationSchema.pre("save", function (next) {
+  if (this.isModified("title")) {
+    this.slug = slugify(this.title, {
+      lower: true,
+      strict: true,
+    });
+  }
+  next();
+});
 
 const FormationModel = mongoose.models.Formation || mongoose.model("Formation", formationSchema);
 

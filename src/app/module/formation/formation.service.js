@@ -84,13 +84,13 @@ export const getAllFormationService = async (query) => {
 
 //get a single formation service
 export const SingleFormationService = async (query) => {
-    const { title } = query;
-    if(!title){
-        throw new ApiError(400, "Formation title is required to update a format");
+    const { slug } = query;
+    if(!slug){
+        throw new ApiError(400, "Formation slug is required to filter a format");
     }
 
     //get formation
-    const formation = await FormationModel.findOne({title: title});
+    const formation = await FormationModel.findOne({slug: slug});
 
     if(!formation){
         throw new ApiError(404, "Failed to retrieve formation details");
