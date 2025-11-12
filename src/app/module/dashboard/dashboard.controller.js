@@ -33,7 +33,7 @@ const sendNotificationToAllBuyerAndInvestor = async (title,country,businessType,
     
     //find out all buyer and investor who has subscription plan
     if(role === "Business Idea Lister"){
-        const users = await UserModel.find({role: "Investor",subscriptionPlanPrice: { $gt: 0 }}).select("name email").lean();
+        const users = await UserModel.find({role: "Investor",subscriptionPlanPrice: { $gte: 0 }}).select("name email").lean();
     
         //now send notification to all buyer and investor
         if(users.length > 0){
@@ -56,7 +56,7 @@ const sendNotificationToAllBuyerAndInvestor = async (title,country,businessType,
     }
     else {
 
-        const users = await UserModel.find({role: { $in: ["Buyer","Investor","Broker"]},subscriptionPlanPrice: { $gt: 0 }}).select("name email").lean();
+        const users = await UserModel.find({role: { $in: ["Buyer","Investor","Broker"]},subscriptionPlanPrice: { $gte: 0 }}).select("name email").lean();
     
         //now send notification to all buyer and investor
         if(users.length > 0){

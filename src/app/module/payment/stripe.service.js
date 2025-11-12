@@ -524,7 +524,7 @@ const updateUserSubscriptionStatus = catchAsync(async () => {
       $set: {
         // isSubscribed: false,
         subscriptionPlan: null,
-        subscriptionPlanPrice: null,
+        subscriptionPlanPrice: 0,
         subscriptionPlanType: null,
         subscriptionStartDate: null,
         subscriptionEndDate: null,
