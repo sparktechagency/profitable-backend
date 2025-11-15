@@ -309,20 +309,28 @@ export const getAllBusinessService = async () => {
 //get a single business by id with interested users
 export const getASingleBusinessByIdWithUsersService = async (query) => {
     // const currentUserId = userDetails.userId;
-    const {businessId} = query;
+    const {slug} = query;
     // console.log(businessId);
     
-    if(!businessId){
-        throw new ApiError(400,"business id is required to get business");
+    if(!slug){
+        throw new ApiError(400,"Business slug is required to get business details");
     }
 
     //get seller details, check subscription plan if no subscription plan
     // const business = await BusinessModel.findById(businessId).populate({path: "user", select:"subscriptionPlan subscriptionPlanPrice"});
 
-    
-    const business = await BusinessModel.findById(businessId);
+    // const [business,interestedUsers] = await Promise.all([
 
-     if(!business){
+    //      await BusinessModel.findOne({slug: slug}),
+    //      await InterestedModel.find({businessId: business._id}).populate({
+    //         path: "userId",
+    //         select: "name email image role", // only fetch 'role' from User model
+    //      })
+    // ]);
+
+    const business = await BusinessModel.findOne({slug: slug});
+
+    if(!business){
         throw new ApiError(500, "No business details found");
     }
 
@@ -339,7 +347,7 @@ export const getASingleBusinessByIdWithUsersService = async (query) => {
 
     
     //find out all users who are interested to this business
-    const interestedUsers = await InterestedModel.find({businessId: businessId}).populate({
+    const interestedUsers = await InterestedModel.find({businessId: business?._id}).populate({
         path: "userId",
         select: "name email image role", // only fetch 'role' from User model
     });

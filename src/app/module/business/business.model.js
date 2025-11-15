@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import slugify from "slugify";
 
 
 const businessSchema = new mongoose.Schema({
@@ -16,7 +17,12 @@ const businessSchema = new mongoose.Schema({
         type: String,
         required: [true, "Business title is required to list a new business"]
     },
-    //
+    slug: {
+      type: String,
+      unique: true,
+      lowercase: true,
+      index: true,
+    },
     businessRole:{
         type: String,
         required: [true, "business role is required to list new business"],
@@ -81,6 +87,16 @@ const businessSchema = new mongoose.Schema({
         default: 0,
     }
 },{timestamps: true});
+
+businessSchema.pre("save", function (next) {
+  if (this.isModified("title")) {
+    this.slug = slugify(this.title, {
+      lower: true,
+      strict: true,
+    });
+  }
+  next();
+});
 
 
 

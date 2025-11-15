@@ -29,7 +29,7 @@ const sendNotificationToAllBuyerAndInvestor = async (title,country,businessType,
             subject = "New Business Listed on PBFS - Dont Miss Out!";
     }
 
-    console.log("Sending email to all buyer and investor");
+    // console.log("Sending email to all buyer and investor");
     
     //find out all buyer and investor who has subscription plan
     if(role === "Business Idea Lister"){
