@@ -896,6 +896,7 @@ export const featuredBusinessService = async (params,query) => {
             askingPrice: 1,
             businessRole: 1,
             createdAt: 1,
+            slug: 1,
             "userData._id": 1,
             "userData.name": 1,
             "userData.email": 1,
