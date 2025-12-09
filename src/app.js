@@ -40,10 +40,11 @@ app.use(cors({
         "https://api.profitablebusinessesforsale.com",
         "https://admin.profitablebusinessesforsale.com",
     ],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true
 }));
 
-app.options("*", cors());
+// app.options("*", cors());
 
 // app.use(cors());
 
