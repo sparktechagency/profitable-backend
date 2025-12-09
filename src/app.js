@@ -27,11 +27,25 @@ app.use(redirectUrl);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
-// app.use(cors({
-//     origin: ["http://10.10.20.60:3005"],
-//     credentials: true
-// }));
-app.use(cors());
+app.use(cors({
+    origin: [
+        "https://profitablebusinessesforsale.com",
+        "https://www.profitablebusinessesforsale.com",
+        "https://us.profitablebusinessesforsale.com",
+        "https://uk.profitablebusinessesforsale.com",
+        "https://uae.profitablebusinessesforsale.com",
+        "https://au.profitablebusinessesforsale.com",
+        "https://za.profitablebusinessesforsale.com",
+        "https://ca.profitablebusinessesforsale.com",
+        "https://api.profitablebusinessesforsale.com",
+        "https://admin.profitablebusinessesforsale.com",
+    ],
+    credentials: true
+}));
+
+app.options("*", cors());
+
+// app.use(cors());
 
 //auto detect country while loading
 // app.use(detectCountry);
