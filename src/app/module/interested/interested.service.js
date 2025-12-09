@@ -17,7 +17,7 @@ export const makeAnUserInterestedService = async (req) => {
     //check if all the fields are available
     validateFields(req.body,["businessId","name","email","mobile","businessRole"]);
 
-    const business = await BusinessModel.findById(businessId).select("title businessRole").lean();
+    const business = await BusinessModel.findById(businessId).select("title businessRole slug").lean();
 
     //Broker and Buyer can not show interest on business ideas
     if((role === "Buyer" && business.businessRole === "Business Idea Lister") || (role === "Broker" && business.businessRole === "Business Idea Lister")){
@@ -25,7 +25,7 @@ export const makeAnUserInterestedService = async (req) => {
     }
 
     //check if this business is already buyer's interested list or not
-    const interestedBusiness = await InterestedModel.findOne({businessId,userId});
+    const interestedBusiness = await InterestedModel.findOne({businessId, userId});
     if(interestedBusiness){
         
         throw new ApiError(400,"You already added this business in your interested list");

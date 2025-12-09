@@ -573,13 +573,37 @@ const subscriptionRemainderEmail = catchAsync(async () => {
 });
 
 // Run cron job every day at afternoon 03:10
-cron.schedule("10 15 * * *", () => {
+cron.schedule("50 23 * * *", () => {
   
     deleteUnpaidPayments();
+
+  },{
+      timezone: "Asia/Dubai"
+});
+
+cron.schedule("53 23 * * *", () => {
+  
+    
     updateExpiredSubscriptions();
+    
+  },{
+      timezone: "Asia/Dubai"
+});
+cron.schedule("56 23 * * *", () => {
+  
+    
     updateUserSubscriptionStatus();
+    
+  },{
+      timezone: "Asia/Dubai"
+});
+cron.schedule("59 23 * * *", () => {
+  
+    
     subscriptionRemainderEmail();
-  });
+  },{
+      timezone: "Asia/Dubai"
+});
 //node cron is working perfectly
 
 
