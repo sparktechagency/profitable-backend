@@ -874,7 +874,7 @@ export const featuredBusinessService = async (params,query) => {
         // 3️⃣ Keep only businesses where owner's subscriptionPlanPrice > 0
         {
             $match: {
-            "userData.subscriptionPlanPrice": { $gt: 0 }
+                "userData.subscriptionPlanPrice": { $gt: 0 }
             }
         },
 
@@ -905,71 +905,10 @@ export const featuredBusinessService = async (params,query) => {
         }
     ]);
 
-    // const businessesWithMaxPricePlan = await BusinessModel.aggregate([
-    //     // Step 1: Join Business with User
-    //     {
-    //          $match: filter
-    //     },
-    //      //join with users
-    //     {
-    //         $lookup: {
-    //             from: "users",
-    //             localField: "user",
-    //             foreignField: "_id",
-    //             as: "userData"
-    //         }
-    //     },
-    //     { $unwind: "$userData" },
-
-    //     // 2️⃣ Join with subscription plans
-    //     {
-    //         $lookup: {
-    //         from: "subscriptionplans",
-    //         localField: "userData.subscriptionPlan",
-    //         foreignField: "_id",
-    //         as: "planData"
-    //         }
-    //     },
-    //     { $unwind: "$planData" },
-
-    //     // 3️⃣ Find max price for each role
-    //     {
-    //         $lookup: {
-    //         from: "subscriptionplans",
-    //         let: { role: "$planData.subscriptionPlanRole" },
-    //         pipeline: [
-    //             { $match: { $expr: { $eq: ["$subscriptionPlanRole", "$$role"] } } },
-    //             { $group: { _id: null, maxPrice: { $max: "$price" } } }
-    //         ],
-    //         as: "maxPriceData"
-    //         }
-    //     },
-    //     { $unwind: "$maxPriceData" },
-
-    //     // 4️⃣ Keep only businesses where user's plan price == max price for their role
-    //     {
-    //         $match: {
-    //             $expr: { $eq: ["$planData.price", "$maxPriceData.maxPrice"] }
-    //         }
-    //     },
-
-    //     // 5️⃣ Project only business details + subscriptionPlanName
-    //     {
-    //         $project: {
-    //         _id: 1,
-    //         title: 1,
-    //         image: 1,
-    //         category: 1,
-    //         country: 1,
-    //         location: 1,
-    //         askingPrice: 1,
-    //         businessRole: 1,
-    //         createdAt: 1,
-    //         subscriptionPlanPrice: "$userData.subscriptionPlanPrice",
-    //         planPrice: "$planData.price"
-    //         }
-    //     }
-    // ]);
+   
+    if(businessesWithMaxPricePlan.length === 0){
+        return await BusinessModel.find(filter).sort({ createdAt: -1 }).limit(12);
+    }
 
     // console.log(businessesWithMaxPricePlan);
     return businessesWithMaxPricePlan;

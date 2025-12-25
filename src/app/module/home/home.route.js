@@ -23,8 +23,8 @@ homeRouter.get("/get-terms-condition", gettermsAndCondition);
 //     return res.status(201).json({message: "Refund and cancellation policy created", data: resp});
 // });
 
-homeRouter.patch("/update-refund-cancellation", updateRefundPolicy);
-homeRouter.get("/get-refund-cancellation", getRefundPolicy);
+homeRouter.patch("/update-refund-policy", updateRefundPolicy);
+homeRouter.get("/get-refund-get", getRefundPolicy);
 
 
 export default homeRouter;

@@ -194,7 +194,7 @@ export const getPrivacyPolicy = catchAsync(
 export const getRefundPolicy = catchAsync(
     async (req,res) => {
 
-        const privacyId = "68e4a09539a79ca94f470524";
+        const privacyId = "694d066c2b794e4d0af1b8e6";
 
         const response = await RefundCancellationModel.findById(privacyId);
 
@@ -217,7 +217,7 @@ export const updateRefundPolicy = catchAsync(
 
         if(!description) throw new ApiError(400, "Refund policy is needed to update");
         
-        const policyId = "68e4a09539a79ca94f470524";
+        const policyId = "694d066c2b794e4d0af1b8e6";
 
         const response = await RefundCancellationModel.findByIdAndUpdate(policyId,{description},{new: true});
         if(!response) throw new ApiError(500, "Failed to update Privacy Policy");

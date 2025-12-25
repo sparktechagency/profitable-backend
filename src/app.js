@@ -39,6 +39,7 @@ app.use(cors({
         "https://ca.profitablebusinessesforsale.com",
         "https://api.profitablebusinessesforsale.com",
         "https://admin.profitablebusinessesforsale.com",
+        "http://localhost:4173"
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true
