@@ -24,7 +24,7 @@ homeRouter.get("/get-terms-condition", gettermsAndCondition);
 // });
 
 homeRouter.patch("/update-refund-policy", updateRefundPolicy);
-homeRouter.get("/get-refund-get", getRefundPolicy);
+homeRouter.get("/get-refund-policy", getRefundPolicy);
 
 
 export default homeRouter;

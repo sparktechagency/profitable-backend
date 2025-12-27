@@ -853,7 +853,6 @@ export const featuredBusinessService = async (params,query) => {
         }
     }
 
-
     const businessesWithMaxPricePlan = await BusinessModel.aggregate([
         // 1️⃣ Match approved businesses with optional country + businessRole filter
         { 
