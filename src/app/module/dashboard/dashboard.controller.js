@@ -94,7 +94,7 @@ export const dashboardController = catchAsync( async (req,res) => {
                 isApproved: true,
                 createdAt: {
                     $gte: new Date(`${year}-01-01`),   // first day of year
-                    $lt: new Date(`${year + 1}-01-01`) // first day of next year
+                    $lt: new Date(`${year}-12-31`) // last day of year
                 }
             }
         },

@@ -52,7 +52,10 @@ export const createNewFormatService = async (req) => {
 export const getAllFormationWebsiteService = async () => {
    
     //get all info from db
-    const allFormat = await FormationModel.find({}).lean();
+    const allFormat = await FormationModel.find({})
+        .sort({createdAt: -1})
+            .lean();
+            
     if(!allFormat){
         throw new ApiError(404, "Failed to get all formation");
     }
@@ -70,7 +73,7 @@ export const getAllFormationService = async (query) => {
     let skip = (page - 1) * limit;
 
     //get all info from db
-    const allFormat = await FormationModel.find({}).skip(skip).limit(limit);
+    const allFormat = await FormationModel.find({}).sort({createdAt: -1}).skip(skip).limit(limit);
 
     if(!allFormat){
         throw new ApiError(404, "Failed to get all formation");

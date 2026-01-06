@@ -198,6 +198,55 @@ export const postCheckoutService = async (userData, payload) => {
       throw new ApiError(400 , "SubscriptionPlan not found");
   }
 
+  //handle idea lister subscription plan especially
+  if(role === "Business Idea Lister"){
+  
+    const paymentData = {
+      user: userId, amount: 0,duration: "365D",checkout_session_id: `FREE-${uuidv4()}`,subscriptionPlan: subscriptionPlan._id,
+      status: "Paid", subscriptionStatus: "Active", 
+      subscriptionStartDate: new Date(), 
+      subscriptionEndDate: new Date(new Date().setDate(new Date().getDate() + 365)), // 1 year free plan
+    };
+
+    const payment = await PaymentModel.create(paymentData);
+    if(!payment) throw new ApiError(500," Failed to create new Payment for Business Idea Lister.");
+
+    const user = await UserModel.findByIdAndUpdate(userId,{
+      subscriptionPlan: subscriptionId, subscriptionPlanPrice: 0, subscriptionPlanType: "Free Plan", subscriptionStartDate: payment?.subscriptionStartDate,subscriptionEndDate: payment?.subscriptionEndDate
+    },{new: true}).select("name email");
+
+    //get user detail
+    // const user = await UserModel.findById(userId).select("name email").lean();
+
+    // send email to user
+    const emailData = {
+      name: user.name,
+      subscriptionPlan: "Free Plan",
+      price: 0,
+      currency: "USD",
+      startDate: payment?.subscriptionStartDate,
+      endDate: payment?.subscriptionEndDate,
+      // payment_intent_id: payment_intent,
+    };
+
+    //send mail to user with payment details
+    await sendSubscriptionEmail(user.email, emailData);
+
+    // send notification
+    postNotification(
+      "Subscription Success",
+      "Your 365 day Free subscription plan has been successfully updated.",
+      user._id
+    );
+
+    postNotification(
+      "New Subscriber",
+      "Profitable Business got a new Free Plan subscriber. Check it out!"
+    );
+
+    return 'https://profitablebusinessesforsale.com/payment-successfull';
+  }
+
   //calculate subscription start date and end date
   const subscriptionStartDate = new Date();
   const subscriptionEndDate = getEndDate(duration);
@@ -245,13 +294,13 @@ export const postCheckoutService = async (userData, payload) => {
     // send notification
     postNotification(
       "Subscription Success",
-      "Your subscription has been successfully updated.",
+      "Your Free subscription Plan has been successfully updated.",
       user._id
     );
 
     postNotification(
       "New Subscriber",
-      "Profitable Business got a new subscriber. Check it out!"
+      "Profitable Business got a new Free Plan subscriber. Check it out!"
     );
 
     return 'https://profitablebusinessesforsale.com/payment-successfull';
@@ -352,13 +401,13 @@ export const postCheckoutService = async (userData, payload) => {
     // send notification
     postNotification(
       "Subscription Success",
-      "Your subscription has been successfully updated.",
+      `Your ${subscriptionPlan?.subscriptionPlanType} subscription plan has been successfully updated.`,
       user._id
     );
 
     postNotification(
       "New Subscriber",
-      "Profitable Business got a new subscriber. Check it out!"
+      `Profitable Business got a new ${subscriptionPlan?.subscriptionPlanType} subscriber with price 0. Check it out!`
     );
 
     return 'https://profitablebusinessesforsale.com/payment-successfull';

@@ -1,48 +1,44 @@
-import dotenv from "dotenv";
 import { exec } from "child_process";
 import fs from "fs";
 import path from "path";
-import AWS from "aws-sdk";
 import archiver from "archiver";
 import cron from "node-cron";
+import config from "../config/index.js";
+import {
+  S3Client,
+  PutObjectCommand,
+  ListObjectsV2Command,
+  DeleteObjectCommand,
+} from "@aws-sdk/client-s3";
 
-dotenv.config();
-
-const {
-  MONGO_URI,
-  AWS_ACCESS_KEY_ID,
-  AWS_SECRET_ACCESS_KEY,
-  AWS_REGION,
-  S3_BUCKET_NAME,
-  BACKUP_FOLDER,
-} = process.env;
-
-AWS.config.update({
-  accessKeyId: AWS_ACCESS_KEY_ID,
-  secretAccessKey: AWS_SECRET_ACCESS_KEY,
-  region: AWS_REGION,
+// ─────────────────────────────────────────────
+// AWS S3 CLIENT (SDK v3)
+const s3 = new S3Client({
+  region: config.aws.region,
+  credentials: {
+    accessKeyId: config.aws.access_key_id,
+    secretAccessKey: config.aws.secret_access_key,
+  },
 });
 
-const s3 = new AWS.S3();
 const S3_BACKUP_PREFIX = "mongodb-backups/";
-
 
 // ─────────────────────────────────────────────
 // Keep only LAST 2 backups in S3
 async function cleanupOldBackupsFromS3() {
-  const { Contents } = await s3
-    .listObjectsV2({
-      Bucket: S3_BUCKET_NAME,
+  const { Contents } = await s3.send(
+    new ListObjectsV2Command({
+      Bucket: config.aws.s3_bucket_name,
       Prefix: S3_BACKUP_PREFIX,
     })
-    .promise();
+  );
 
   if (!Contents || Contents.length <= 2) {
     console.log("🧹 No old backups to delete");
     return;
   }
 
-  // Sort by LastModified (newest first)
+  // Sort newest → oldest
   const sorted = Contents.sort(
     (a, b) => new Date(b.LastModified) - new Date(a.LastModified)
   );
@@ -50,29 +46,28 @@ async function cleanupOldBackupsFromS3() {
   const oldBackups = sorted.slice(2);
 
   for (const file of oldBackups) {
-    await s3
-      .deleteObject({
-        Bucket: S3_BUCKET_NAME,
+    await s3.send(
+      new DeleteObjectCommand({
+        Bucket: config.aws.s3_bucket_name,
         Key: file.Key,
       })
-      .promise();
+    );
 
     console.log(`🗑️ Deleted old backup: ${file.Key}`);
   }
 }
 
 // ─────────────────────────────────────────────
-
-async function createBackup() {
+export async function createBackup() {
   const date = new Date().toISOString().slice(0, 10);
-  const dumpPath = path.join(BACKUP_FOLDER, `dump-${date}`);
+  const dumpPath = path.join(config.aws.backup_folder, `dump-${date}`);
   const zipFilePath = `${dumpPath}.zip`;
 
   console.log(`📦 Weekly backup started: ${date}`);
 
   // 1️⃣ Mongo Dump
   await new Promise((resolve, reject) => {
-    const command = `mongodump --uri="${MONGO_URI}" --out=${dumpPath}`;
+    const command = `mongodump --uri="${config.database_url}" --out=${dumpPath}`;
     exec(command, (err, stdout, stderr) => {
       if (err) return reject(stderr);
       resolve();
@@ -92,21 +87,21 @@ async function createBackup() {
     archive.on("error", reject);
   });
 
-  // 3️⃣ Upload to S3
+  // 3️⃣ Upload to S3 (SDK v3)
   const s3Key = `${S3_BACKUP_PREFIX}${path.basename(zipFilePath)}`;
 
-  await s3
-    .upload({
-      Bucket: S3_BUCKET_NAME,
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: config.aws.s3_bucket_name,
       Key: s3Key,
       Body: fs.createReadStream(zipFilePath),
       ContentType: "application/zip",
     })
-    .promise();
+  );
 
   console.log(`☁️ Uploaded to S3: ${s3Key}`);
 
-  // 4️⃣ Cleanup old backups (keep only last 2)
+  // 4️⃣ Cleanup old backups (keep last 2)
   await cleanupOldBackupsFromS3();
 
   // 5️⃣ Remove local files
@@ -116,9 +111,10 @@ async function createBackup() {
   console.log("✅ Weekly backup completed successfully\n");
 }
 
+
 // ─────────────────────────────────────────────
 // ⏰ Run ONCE PER WEEK (Sunday at 2 AM)
-cron.schedule("0 2 * * 0", () => {
-  console.log("⏰ Running weekly MongoDB backup...");
-  createBackup().catch(console.error);
-});
+// cron.schedule("0 2 * * 0", () => {
+//   console.log("⏰ Running weekly MongoDB backup...");
+//   createBackup().catch(console.error);
+// });

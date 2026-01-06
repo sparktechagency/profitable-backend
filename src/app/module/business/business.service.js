@@ -818,9 +818,13 @@ export const markedBusinessSoldService = async (query) => {
     if(!businessId) throw new ApiError(400, "business id is required to mark your business as sold");
 
     //find business and update isSold
-    const business = await BusinessModel.findByIdAndUpdate(businessId,{isSold: isSold},{new: true}).select('isSold');
+    const business = await BusinessModel.findById(businessId);
 
-    if(!business) throw new ApiError(500, "Failed to update business as sold");
+    if(!business) throw new ApiError(500, "Failed to get business to mark as sold");
+
+    business.isSold = isSold === 'true' ? true : false;
+    business.soldAt = isSold === 'true' ? new Date() : null;
+    await business.save();
 
     return business;
 }
@@ -906,7 +910,7 @@ export const featuredBusinessService = async (params,query) => {
 
    
     if(businessesWithMaxPricePlan.length === 0){
-        return await BusinessModel.find(filter).sort({ createdAt: -1 }).limit(12);
+        return await BusinessModel.find(filter).sort({ createdAt: -1 }).limit(4).lean();
     }
 
     // console.log(businessesWithMaxPricePlan);

@@ -50,6 +50,13 @@ const config = {
     stripe_webhook_secret_production:
       process.env.STRIPE_WEBHOOK_SECRET_PRODUCTION,
   },
+  aws: {
+    access_key_id: process.env.AWS_ACCESS_KEY_ID,
+    secret_access_key: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION,
+    s3_bucket_name: process.env.S3_BUCKET_NAME,
+    backup_folder: process.env.BACKUP_FOLDER,
+  },
   variables: {
     email_temp_image: process.env.EMAIL_TEMP_IMAGE,
     email_temp_text_secondary_color:

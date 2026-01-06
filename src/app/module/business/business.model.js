@@ -82,6 +82,10 @@ const businessSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    soldAt: {
+        type: Date,
+        default: null,
+    },
     views: {
         type: Number,
         default: 0,
@@ -98,6 +102,11 @@ businessSchema.pre("save", function (next) {
   next();
 });
 
+// TTL index to auto-delete sold business after 30 days
+businessSchema.index(
+  { soldAt: 1 },
+  { expireAfterSeconds: 60 * 60 * 24 * 30 } // 30 days
+);
 
 
 const BusinessModel = mongoose.models.Business || mongoose.model("Business",businessSchema);

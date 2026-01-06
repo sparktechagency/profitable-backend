@@ -3,6 +3,7 @@ import config from "./config/index.js";
 import { errorLogger, logger } from "./utils/logger.js";
 import mongoDBConnection from "./DB/dbConnection.js";
 import mainServer from "./DB/socket.js";
+import runCronJobEverydatAtNight from "./helper/nodeCronHelper.js";
 
 let port = config.port ;
 
@@ -10,6 +11,9 @@ async function main(){
     try {
         //db connection
         mongoDBConnection();
+        
+        //cron job run
+        runCronJobEverydatAtNight()
 
         //server hitting in particular port
         // app.listen(port,()=>{
