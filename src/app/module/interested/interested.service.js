@@ -46,6 +46,8 @@ export const makeAnUserInterestedService = async (req) => {
         //send notification to idea lister
         postNotification("New Enquiry",`You have a new enquiry from ${name} about your listed business ideas. View and respond to keep the deal moving.`,seller.user._id);
 
+        //get investor subscription plan details
+
         //send email to idea lister
         const emailData = {
             sellerName: seller.user.name,

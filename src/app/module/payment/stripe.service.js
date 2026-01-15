@@ -235,7 +235,7 @@ export const postCheckoutService = async (userData, payload) => {
     // send notification
     postNotification(
       "Subscription Success",
-      "Your 365 day Free subscription plan has been successfully updated.",
+      "Your 1 year Free subscription plan has been successfully updated.",
       user._id
     );
 
@@ -499,7 +499,7 @@ export const webhookManagerService = async (req) => {
 };
 
 // Delete unpaid payments
-const deleteUnpaidPayments = catchAsync(async () => {
+export const deleteUnpaidPayments = catchAsync(async () => {
   const paymentDeletionResult = await PaymentModel.deleteMany({
     status: "Unpaid",
   });
@@ -512,7 +512,7 @@ const deleteUnpaidPayments = catchAsync(async () => {
 });
 
 // Update expired subscriptions
-const updateExpiredSubscriptions = catchAsync(async () => {
+export const updateExpiredSubscriptions = catchAsync(async () => {
 
   const expiredSubscriptions = await PaymentModel.updateMany(
     {
@@ -534,7 +534,7 @@ const updateExpiredSubscriptions = catchAsync(async () => {
 });
 
 // update user subscription status
-const updateUserSubscriptionStatus = catchAsync(async () => {
+export const updateUserSubscriptionStatus = catchAsync(async () => {
 
   const subscriptionExpiredUsers = await UserModel.find({
     subscriptionPlan: { $ne: null},
@@ -589,70 +589,131 @@ const updateUserSubscriptionStatus = catchAsync(async () => {
 });
 
 //send subscription remainder email to every user
-const subscriptionRemainderEmail = catchAsync(async () => {
+// export const subscriptionRemainderEmail = catchAsync(async () => {
+//   const now = new Date();
+//   const fiveDaysFromNow = new Date();
+//   fiveDaysFromNow.setDate(now.getDate() + 5);
+
+//   const startOfDay = new Date(fiveDaysFromNow.setHours(0, 0, 0, 0));
+//   const endOfDay = new Date(fiveDaysFromNow.setHours(23, 59, 59, 999));
+
+//   //find out all user whose subscription plan will be expired after 5 days
+//   const allUsers = await UserModel.find({
+//     subscriptionPlan: { $ne: null },
+//     subscriptionEndDate: { $gte: startOfDay, $lte: endOfDay },
+//   })
+//   .select("name email subscriptionEndDate")
+//   .lean();
+
+//   //users length 0. then no need to send email
+//    if (allUsers.length === 0) {
+//       console.log("No users with expiring subscriptions found today.");
+//       return;
+//     }
+
+//     // Send email to each user
+//     for (const user of allUsers) {
+//       await sendSubscriptionRemainderEmail(user.email,{
+//         name: user.name,
+//         subscriptionEndDate: user.subscriptionEndDate
+//       });
+//     }
+
+// });
+
+export const subscriptionRemainderEmail = catchAsync(async () => {
   const now = new Date();
-  const fiveDaysFromNow = new Date();
-  fiveDaysFromNow.setDate(now.getDate() + 5);
 
-  const startOfDay = new Date(fiveDaysFromNow.setHours(0, 0, 0, 0));
-  const endOfDay = new Date(fiveDaysFromNow.setHours(23, 59, 59, 999));
+  const targetDateUTC = new Date(
+    Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate() + 5
+    )
+  );
 
-  //find out all user whose subscription plan will be expired after 5 days
+  const startOfDay = new Date(targetDateUTC);
+  startOfDay.setUTCHours(0, 0, 0, 0);
+
+  const endOfDay = new Date(targetDateUTC);
+  endOfDay.setUTCHours(23, 59, 59, 999);
+
+  console.log("Reminder range:", startOfDay, endOfDay);
+
   const allUsers = await UserModel.find({
     subscriptionPlan: { $ne: null },
     subscriptionEndDate: { $gte: startOfDay, $lte: endOfDay },
+    // subscriptionReminderSent: { $ne: true },
   })
-  .select("name email subscriptionEndDate")
-  .lean();
+    .select("_id name email subscriptionEndDate")
+    .lean();
 
-  //users length 0. then no need to send email
-   if (allUsers.length === 0) {
-      console.log("No users with expiring subscriptions found today.");
-      return;
-    }
+  if (!allUsers.length) {
+    console.log("No users with expiring subscriptions found today.");
+    return;
+  }
 
-    // Send email to each user
-    for (const user of allUsers) {
-      await sendSubscriptionRemainderEmail(user.email,{
-        name: user.name,
-        subscriptionEndDate: user.subscriptionEndDate
-      });
-    }
+  for (const user of allUsers) {
+    await sendSubscriptionRemainderEmail(user.email, {
+      name: user.name,
+      subscriptionEndDate: user.subscriptionEndDate,
+    });
 
+    // await UserModel.updateOne(
+    //   { _id: user._id },
+    //   { subscriptionReminderSent: true }
+    // );
+  }
+
+  console.log(`Sent ${allUsers.length} subscription reminder emails`);
 });
+
+
+// cron.schedule(
+//   "59 23 * * *",
+//   async () => {
+//     try {
+//       await subscriptionRemainderEmail();
+//     } catch (err) {
+//       console.error("Subscription reminder cron error:", err);
+//     }
+//   },
+//   { timezone: "Asia/Dubai" }
+// );
+
 
 // Run cron job every day at afternoon 03:10
-cron.schedule("50 23 * * *", () => {
+// cron.schedule("50 23 * * *", () => {
   
-    deleteUnpaidPayments();
+//     deleteUnpaidPayments();
 
-  },{
-      timezone: "Asia/Dubai"
-});
+//   },{
+//       timezone: "Asia/Dubai"
+// });
 
-cron.schedule("53 23 * * *", () => {
+// cron.schedule("53 23 * * *", () => {
   
     
-    updateExpiredSubscriptions();
+//     updateExpiredSubscriptions();
     
-  },{
-      timezone: "Asia/Dubai"
-});
-cron.schedule("56 23 * * *", () => {
+//   },{
+//       timezone: "Asia/Dubai"
+// });
+// cron.schedule("56 23 * * *", () => {
   
     
-    updateUserSubscriptionStatus();
+//     updateUserSubscriptionStatus();
     
-  },{
-      timezone: "Asia/Dubai"
-});
-cron.schedule("59 23 * * *", () => {
+//   },{
+//       timezone: "Asia/Dubai"
+// });
+// cron.schedule("59 23 * * *", () => {
   
     
-    subscriptionRemainderEmail();
-  },{
-      timezone: "Asia/Dubai"
-});
+//     subscriptionRemainderEmail();
+//   },{
+//       timezone: "Asia/Dubai"
+// });
 //node cron is working perfectly
 
 

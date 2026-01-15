@@ -69,7 +69,7 @@ const adminEmailTemp = (data) => `
       <div class="container">
         
         <p>Hello, ${data.name}</p>
-        ${ data.updated ? `<h2>A business has been updated and needs your approval</h2>` : `<p>Good news! A user has listed a business on ProfitableBusinessesForSale.com.</p>` }
+        ${ data.updated ? `<h2>A business has been updated and needs your approval to become live again.</h2>` : `<p>Good news! A user has listed a business on ProfitableBusinessesForSale.com.</p>` }
           
         <h3>Business: ${data.title}</h3>
         <h3>Category: ${data.category}</h3>

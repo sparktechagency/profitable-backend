@@ -50,7 +50,7 @@ export const helpAndSupportController = catchAsync(
     async (req,res) => {
         
         const {firstName,lastName,email,phone,message} = req.body;
-
+        console.log(req.body);
         //sent this data to admin email
         try {
             
@@ -62,33 +62,37 @@ export const helpAndSupportController = catchAsync(
                     pass: config.smtp.smtp_password, // Use App Password for Gmail with 2FA
                  },
             });
+
+
     
             const mailOptions = {
-            from: `Profitable Business <${config.smtp.smtp_mail}>`,
-            to: config.smtp.smtp_mail,
-            subject: 'Help and Suport',
-            text: `Hello Admin,
+                from: `Profitable Business <${config.smtp.smtp_mail}>`,
+                to: config.smtp.smtp_mail,
+                subject: 'Help and Suport',
+                text: `Hello Admin,
 
-                This is ${firstName ? firstName : "NA"}.
+                    This is ${firstName ? firstName : "NA"}.
 
-                I am reaching out to report an issue I am currently facing. Please find the details below:
+                    I am reaching out to report an issue I am currently facing. Please find the details below:
 
-                Issue Message: ${message ? message : "NA"}
+                    Issue Message: ${message ? message : "NA"}
 
-                User Details:
-                - Name  : ${firstName ? firstName : "NA"} ${lastName ? lastName : "NA"}
-                - Email : ${email ? email : "NA"}
-                - Phone : ${phone ? phone : "NA"}
+                    User Details:
+                    - Name  : ${firstName ? firstName : "NA"} ${lastName ? lastName : "NA"}
+                    - Email : ${email ? email : "NA"}
+                    - Phone : ${phone ? phone : "NA"}
 
-                I kindly request you to look into this matter and take the necessary steps to resolve the issue at the earliest.
+                    I kindly request you to look into this matter and take the necessary steps to resolve the issue at the earliest.
 
-                Thank you for your support.
+                    Thank you for your support.
 
-                Best regards,  
-                ${firstName ? firstName : "NA"}
+                    Best regards,  
+                    ${firstName ? firstName : "NA"}
                 `
 
             };
+
+            await transporter.verify();
     
             // Send email
             await transporter.sendMail(mailOptions);
@@ -101,7 +105,7 @@ export const helpAndSupportController = catchAsync(
         catch (error) {
             console.error('Error sending email:', error);
             // res.status(500).json({ message: 'Something went wrong.' });
-            throw new ApiError(500,"failed to send email from Help and Support");
+            throw new ApiError(500,"failed to send email for Help and Support.");
         }
 
 

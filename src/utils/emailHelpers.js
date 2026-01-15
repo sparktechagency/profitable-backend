@@ -41,7 +41,7 @@ export const sendResetPasswordEmail = async (email, data) => {
   try {
     await sendEmail({
       email,
-      subject: "Reset password code - PBFS Security Code",
+      subject: "Reset password - PBFS Security Code",
       html: resetPassEmailTemp(data),
     });
   } catch (error) {
@@ -173,7 +173,7 @@ export const sendWelcomeEmail = async (email,data) => {
   try {
     await sendEmail({
       email,
-      subject: "Welcome to PBFS - PBFS . Start your journey today",
+      subject: "Welcome to PBFS. Start your journey today",
       html: welcomeEmailTemp(data),
     });
   } catch (error) {
@@ -199,7 +199,7 @@ export const sendPasswordChangeEmail = async (email,data) => {
   try {
     await sendEmail({
       email,
-      subject: "Your Password Changed Successfully - PBFS",
+      subject: "Your password has changed successfully - PBFS",
       html: changePasswordConfirmationTemp(data),
     });
   } catch (error) {
@@ -212,7 +212,7 @@ export const sendNewMessageEmail = async (email,data) => {
   try {
     await sendEmail({
       email,
-      subject: "You Have a New Message on PBFS ",
+      subject: "You have a new message on PBFS ",
       html: newMessageEmailTemp(data),
     });
   } catch (error) {
@@ -251,7 +251,7 @@ export const sendNdaEmailToAdmin = async (email,data) => {
   try {
     await sendEmail({
       email,
-      subject: "An user submited a new nda agreement - PBFS ",
+      subject: "An user submited a new NDA agreement - PBFS ",
       html: adminNdaEmailTemp(data),
       attachments: [
         {
@@ -271,7 +271,7 @@ export const sendNdaEmailToUser = async (email,data) => {
   try {
     await sendEmail({
       email,
-      subject: "You have received a new nda agreement - PBFS ",
+      subject: "You have received a new NDA agreement - PBFS ",
       html: userNdaEmailTemp(data),
       attachments: [
         {

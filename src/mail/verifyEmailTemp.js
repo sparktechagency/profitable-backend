@@ -70,8 +70,8 @@ const verifyEmailTemp = (data) => `
         <h1>Welcome to PBFS!</h1>
         <p>Hello, ${data.name}</p>
         <p>Thank you for registering with Profitable Businesses For Sale. To verify your email and secure your account, please use the one-time password (OTP) below:</p>
-        <h3>Your Otp: ${data.code}</h3>
-        <p>This code will expire in 10 minutes. If you didnt request this, please ignore this email.</p>
+        <h3>Your OTP: ${data.code}</h3>
+        <p>This code will expire in 10 minutes. If you didn't request this, please ignore this email.</p>
         
         <p>Best Regards,<br>Team PBFS</p>
       </div>

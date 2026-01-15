@@ -33,7 +33,7 @@ var upload = multer({
   storage: storage,
 
   limits: {
-    fileSize: 1024 * 1024 * 5, // 5MB . less than 5mb file allowed
+    fileSize: 1024 * 1024 * 20, // 5MB . less than 5mb file allowed
   },
 
   fileFilter: (req, file, cb) => {
@@ -53,7 +53,7 @@ var upload = multer({
 const uploadPdf = multer({
   dest: 'uploads/pdf', // temp storage, or you can use diskStorage for custom names
   limits: {
-    fileSize: 1 * 1024 * 1024, // 1MB max per file
+    fileSize: 20 * 1024 * 1024, // 1MB max per file
   },
 
   // fileFilter: (req, file, cb) => {

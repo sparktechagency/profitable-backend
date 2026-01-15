@@ -71,7 +71,7 @@ const adminNdaEmailTemp = (data) =>
         <div class="container">
           
           <p>Hello, Admin</p>
-          <p>An user submit a NDA agreement. Please check it.</p>
+          <p>An user submit a NDA agreement. Please check it out.</p>
 
           <h5> Here are the user details: </h5>
           

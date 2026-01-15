@@ -146,10 +146,10 @@ export const getAllUsers = catchAsync( async (req,res) => {
                 // 2️⃣ Lookup subscription plan
                 {
                     $lookup: {
-                    from: "subscriptionplans", // collection name in MongoDB
-                    localField: "subscriptionPlan",
-                    foreignField: "_id",
-                    as: "subscriptionPlan"
+                        from: "subscriptionplans", // collection name in MongoDB
+                        localField: "subscriptionPlan",
+                        foreignField: "_id",
+                        as: "subscriptionPlan"
                     }
                 },
 
@@ -159,13 +159,14 @@ export const getAllUsers = catchAsync( async (req,res) => {
                 // 4️⃣ Project only required fields
                 {
                     $project: {
-                    name: 1,
-                    email: 1,
-                    mobile: 1,
-                    country: 1,
-                    role: 1,
-                    isBlocked: 1,
-                    "subscriptionPlan.subscriptionPlanType": 1
+                        name: 1,
+                        email: 1,
+                        image: 1,
+                        mobile: 1,
+                        country: 1,
+                        role: 1,
+                        isBlocked: 1,
+                        "subscriptionPlan.subscriptionPlanType": 1
                     }
                 },
 
@@ -194,10 +195,10 @@ export const getAllUsers = catchAsync( async (req,res) => {
 
     const skip = (page - 1) * limit;
    
-    let users = await UserModel.find({role: {$ne: "Admin"}}).select('name email mobile country role isBlocked subscriptionPlan subscriptionPlanType').sort({createdAt: -1}).skip(skip).limit(limit);
+    let users = await UserModel.find({role: {$ne: "Admin"}}).select('name email image mobile country role isBlocked subscriptionPlan subscriptionPlanType').sort({createdAt: -1}).skip(skip).limit(limit);
 
 
-    if(!users) throw new ApiError(500, "No user found. Server Error");
+    // if(!users) throw new ApiError(500, "No user found. Server Error");
     
     const total = await UserModel.countDocuments({role: {$ne: "Admin"}});
     const totalPage = Math.ceil(total / limit);
