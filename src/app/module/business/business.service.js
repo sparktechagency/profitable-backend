@@ -118,14 +118,23 @@ export const createNewBusinessService = async (req) => {
         switch(role){
             case "Seller":
                 postNotification('Your business listed successfully','Your business Listing has been submitted for admin approval', user._id);
+                break;
+
             case "Broker":
                 postNotification('Your business listed successfully','Your business Listing has been submitted for admin approval', user._id);
+                break;
+
             case "Asset Seller":
                 postNotification('Your asset listed successfully','Your asset Listing has been submitted for admin approval', user._id);
+                break;
+
             case "Francise Seller":
                 postNotification('Your franchise listed successfully','Your Franchise Listing has been submitted for admin approval', user._id);
+                break;
+                
             case "Business Idea Lister":
                 postNotification('Your business idea listed successfully','Your business idea has been submitted for admin approval', user._id);
+                break;
                 
             default:
                 postNotification('Your business listed successfully','Your business Listing has been submitted for admin approval', user._id);

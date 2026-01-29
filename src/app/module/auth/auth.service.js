@@ -90,7 +90,7 @@ export const userLoginService = async (payload) => {
     validateFields(payload,["email","password","role"]);
 
     //checkif user exist
-    const user = await UserModel.findOne({ email,role}).select({name: true, email: true, role: true,password: true, isEmailVerified: true,isBlocked: true});
+    const user = await UserModel.findOne({ email: email.toLowerCase() ,role}).select({name: true, email: true, role: true,password: true, isEmailVerified: true,isBlocked: true});
     // console.log(user);
 
     if(!user) {
@@ -136,7 +136,7 @@ export const verifyEmailSendOtpService = async (payload) => {
     }
 
     //check if user exist or not
-    const user = await UserModel.findOne({email});
+    const user = await UserModel.findOne({email: email.toLowerCase() });
     if(!user){
         throw new ApiError(404, "User does not exist");
     }
@@ -165,7 +165,7 @@ export const verifyEmailSendOtpService = async (payload) => {
 
 export const verifyEmailVerifyOtpService = async (payload) => {
     const {email,code,role} = payload;
-    console.log(payload);
+    // console.log(payload);
     //check if email exist or not
     validateFields(payload,['email','code','role']);
 
@@ -174,7 +174,7 @@ export const verifyEmailVerifyOtpService = async (payload) => {
     // }
 
     //now check user
-    const user = await UserModel.findOne({email: email,role: role}).lean();
+    const user = await UserModel.findOne({email: email.toLowerCase() ,role: role}).lean();
     // console.log(user);
     if(!user){
          throw new ApiError(404, "user not found");
@@ -191,7 +191,7 @@ export const verifyEmailVerifyOtpService = async (payload) => {
     }
 
     //update user after matching code;
-    const verifiedUser = await UserModel.findOneAndUpdate({email,role},{isEmailVerified: true, verificationCode: null, verificationCodeExpire: null},{new: true}).select('name email isEmailVerified');
+    const verifiedUser = await UserModel.findOneAndUpdate({email: email.toLowerCase() ,role},{isEmailVerified: true, verificationCode: null, verificationCodeExpire: null},{new: true}).select('name email isEmailVerified');
 
     //generate token
     const tokenPayload = {
@@ -221,7 +221,7 @@ export const forgetPasswordService = async (payload) => {
     }
 
     //check if user exist or not
-    const user = await UserModel.findOne({email,role});
+    const user = await UserModel.findOne({email: email.toLowerCase() ,role});
     if(!user){
         throw new ApiError(404, "User does not exist");
     }
@@ -256,7 +256,7 @@ export const forgetPasswordOtpVerifyService = async (payload) => {
     }
 
     //now check user
-    const user = await UserModel.findOne({email,role});
+    const user = await UserModel.findOne({email: email.toLowerCase() ,role});
 
     if(!user){
          throw new ApiError(404, "user not found");
@@ -273,7 +273,7 @@ export const forgetPasswordOtpVerifyService = async (payload) => {
     }
 
     //update user after matching code;
-    const verifiedUser = await UserModel.findOneAndUpdate({email,role},{ verificationCode: null, verificationCodeExpire: null},{new: true}).select('name email');
+    const verifiedUser = await UserModel.findOneAndUpdate({email: email.toLowerCase() ,role},{ verificationCode: null, verificationCodeExpire: null},{new: true}).select('name email');
 
     return verifiedUser;
 }
@@ -293,7 +293,7 @@ export const resetPasswordService = async (payload) => {
     }
 
     //get user
-    const user = await UserModel.findOne({email}).lean();
+    const user = await UserModel.findOne({email: email.toLowerCase() }).lean();
     // console.log(user);
     
     if (!user) {
@@ -308,7 +308,7 @@ export const resetPasswordService = async (payload) => {
     // const hashPass = await hashPassword(newPassword);
 
     //now change password in Database
-    const resetPassword = await UserModel.findOneAndUpdate({email},{password: newPassword});
+    const resetPassword = await UserModel.findOneAndUpdate({email: email.toLowerCase() },{password: newPassword});
     // console.log(resetPassword);
     await sendPasswordChangeEmail(user.email,{name:user.name});
     return resetPassword;

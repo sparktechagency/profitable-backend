@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 import validateFields from "../../../utils/validateFields.js";
 import postNotification from "../../../utils/postNotification.js";
 import { sendListingConfirmationEmail, sendRejectionEmail,newBusinessListingEmail } from "../../../utils/emailHelpers.js";
+import InterestedModel from "../interested/interested.model.js";
 
 //utility function 
 // to send email to all buyer and investor when a new business listed
@@ -17,14 +18,19 @@ const sendNotificationToAllBuyerAndInvestor = async (title,country,businessType,
     switch(role){
         case "Seller":
             subject = "New Business Listed on PBFS - Dont Miss Out!";
+            break;
         case "Broker":
             subject = "New Business Listed on PBFS - Dont Miss Out!";
+            break;
         case "Asset Seller":
             subject = "New Asset Listed on PBFS - Dont Miss Out!";
+            break;
         case "Francise Seller":
             subject = "New Francise Listed on PBFS - Dont Miss Out!";
+            break;
         case "Business Idea Lister":
             subject = "New Business Idea Listed on PBFS - Dont Miss Out!";
+            break;
         default:
             subject = "New Business Listed on PBFS - Dont Miss Out!";
     }
@@ -223,7 +229,10 @@ export const deleteUser = catchAsync( async (req,res) => {
         throw new ApiError(400,"User id is required to delete a user");
     }
 
-    const user = await UserModel.findByIdAndDelete(userId);
+    const [user,interesteds] = await Promise.all([
+        UserModel.findByIdAndDelete(userId),
+        InterestedModel.deleteMany({userId: userId})
+    ]) 
 
     if(!user){
         throw new ApiError(500, "Failed to delete a user");

@@ -592,7 +592,7 @@ export const updateUserSubscriptionStatus = catchAsync(async () => {
 // export const subscriptionRemainderEmail = catchAsync(async () => {
 //   const now = new Date();
 //   const fiveDaysFromNow = new Date();
-//   fiveDaysFromNow.setDate(now.getDate() + 5);
+//   fiveDaysFromNow.setDate(now.getDate() + 1);
 
 //   const startOfDay = new Date(fiveDaysFromNow.setHours(0, 0, 0, 0));
 //   const endOfDay = new Date(fiveDaysFromNow.setHours(23, 59, 59, 999));
@@ -618,6 +618,8 @@ export const updateUserSubscriptionStatus = catchAsync(async () => {
 //         subscriptionEndDate: user.subscriptionEndDate
 //       });
 //     }
+
+//     console.log(`Sent ${allUsers.length} subscription reminder emails.`);
 
 // });
 
