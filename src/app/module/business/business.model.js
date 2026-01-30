@@ -102,6 +102,26 @@ businessSchema.pre("save", function (next) {
   next();
 });
 
+//update slug on title update
+businessSchema.pre("findOneAndUpdate", function (next) {
+  const update = this.getUpdate();
+
+  const title = update?.title || update?.$set?.title;
+
+  if (title) {
+    const slug = slugify(title, {
+      lower: true,
+      strict: true,
+    });
+
+    update.$set = update.$set || {};
+    update.$set.slug = slug;
+  }
+
+  next();
+});
+
+
 // TTL index to auto-delete sold business after 30 days
 businessSchema.index(
   { soldAt: 1 },
