@@ -252,7 +252,7 @@ export const updateABusinessService = async (req) => {
     if(role !== "Admin"){
         //check if user can update or not
         if(userId !== user){
-            throw new ApiError(403,"You can't update this business");
+            throw new ApiError(403,"You can't update this business.");
         }
     }
 
@@ -272,10 +272,38 @@ export const updateABusinessService = async (req) => {
      
      if (!business)  throw new ApiError(404, "Busines not found to update");
       
-    //findout which business instance have to update
-    const updatedBusiness = await BusinessModel.findByIdAndUpdate(businessId,{
-        image: updatedImage,title,category,subCategory, country, state, city, countryName, askingPrice, price, ownerShipType, businessType, reason, description, isApproved: false
-    },{ new: true });
+    // //findout which business instance have to update
+    // const updatedBusiness = await BusinessModel.findByIdAndUpdate(businessId,{
+    //     image: updatedImage,title,category,subCategory, country, state, city, countryName, askingPrice, price, ownerShipType, businessType, reason, description, isApproved: false
+    // },{ new: true });
+
+    const updatedBusiness = await BusinessModel.findByIdAndUpdate(
+        businessId,
+        {
+            $set: {
+                image: updatedImage,
+                title,
+                category,
+                subCategory,
+                country,
+                state,
+                city,
+                countryName,
+                askingPrice,
+                price,
+                ownerShipType,
+                businessType,
+                reason,
+                description,
+                isApproved: false,
+            },
+        },
+        {
+            new: true,
+            runValidators: true,
+        }
+    );
+
 
     if(!updatedBusiness){
         throw new ApiError(500, "Failed to update a business");
@@ -298,7 +326,6 @@ export const updateABusinessService = async (req) => {
 
     }
 
-    
     return updatedBusiness;
 }
 
