@@ -89,8 +89,23 @@ const businessSchema = new mongoose.Schema({
     views: {
         type: Number,
         default: 0,
-    }
+    },
+    metaTitle: {
+      type: String,
+      trim: true,
+      default: ""
+    },
+    metaDescription: {
+      type: String,
+      trim: true,
+      default: ''
+    },
+    metaKeywords: {
+      type: Array,
+      default: [],
+    },
 },{timestamps: true});
+
 
 businessSchema.pre("save", function (next) {
   if (this.isModified("title")) {

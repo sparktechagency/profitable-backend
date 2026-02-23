@@ -257,7 +257,7 @@ export const updateABusinessService = async (req) => {
     }
 
     //destructure property
-    const { title,category, subCategory, country, state, city, countryName, askingPrice, price, ownerShipType, businessType, reason, description} = req.body;
+    const { title,category, subCategory, country, state, city, countryName, askingPrice, price, ownerShipType, businessType, reason, description, metaTitle,metaDescription,metaKeywords } = req.body;
     // console.log(req.body);
     let updatedImage;
     // Step 2: Add new image
@@ -276,6 +276,24 @@ export const updateABusinessService = async (req) => {
     // const updatedBusiness = await BusinessModel.findByIdAndUpdate(businessId,{
     //     image: updatedImage,title,category,subCategory, country, state, city, countryName, askingPrice, price, ownerShipType, businessType, reason, description, isApproved: false
     // },{ new: true });
+
+    // ✅ Parse metaKeywords properly
+    if(metaKeywords && typeof metaKeywords === "string"){
+    // if (typeof metaKeywords === "string") {
+        try {
+            const parsed = JSON.parse(metaKeywords);
+
+            // If parsed is an array, use it. Otherwise, convert CSV string to array.
+            if (Array.isArray(parsed)) {
+                metaKeywords = parsed.map((k) => k.trim());
+            } else {
+                metaKeywords = metaKeywords.split(",").map((k) => k.trim());
+            }
+        } catch (err) {
+            // fallback if JSON.parse fails
+            metaKeywords = metaKeywords.split(",").map((k) => k.trim());
+        }
+    }
 
     const updatedBusiness = await BusinessModel.findByIdAndUpdate(
         businessId,
@@ -296,6 +314,9 @@ export const updateABusinessService = async (req) => {
                 reason,
                 description,
                 isApproved: false,
+                metaTitle,
+                metaDescription,
+                metaKeywords
             },
         },
         {
@@ -873,7 +894,7 @@ export const featuredBusinessService = async (params,query) => {
 
     // //business role = business idea lister then operation will be different
     if(businessRole === "Business Idea Lister"){
-        const business = await BusinessModel.find({businessRole}).sort({views: -1 });
+        const business = await BusinessModel.find({businessRole}).sort({ createdAt: -1 }).lean();
         return business;
     }
 
@@ -925,28 +946,28 @@ export const featuredBusinessService = async (params,query) => {
         // 6️⃣ Final projection of required fields
         {
             $project: {
-            _id: 1,
-            title: 1,
-            image: 1,
-            category: 1,
-            subCategory: 1,
-            country: 1,
-            location: 1,
-            askingPrice: 1,
-            businessRole: 1,
-            createdAt: 1,
-            slug: 1,
-            "userData._id": 1,
-            "userData.name": 1,
-            "userData.email": 1,
-            "userData.subscriptionPlanPrice": 1,
+                _id: 1,
+                title: 1,
+                image: 1,
+                category: 1,
+                subCategory: 1,
+                country: 1,
+                location: 1,
+                askingPrice: 1,
+                businessRole: 1,
+                createdAt: 1,
+                slug: 1,
+                "userData._id": 1,
+                "userData.name": 1,
+                "userData.email": 1,
+                "userData.subscriptionPlanPrice": 1,
             }
         }
     ]);
 
    
     if(businessesWithMaxPricePlan.length === 0){
-        return await BusinessModel.find(filter).sort({ createdAt: -1 }).limit(4).lean();
+        return await BusinessModel.find(filter).sort({ createdAt: -1 }).limit(20).lean();
     }
 
     // console.log(businessesWithMaxPricePlan);

@@ -157,7 +157,7 @@ export const verifyEmailSendOtpService = async (payload) => {
     };
 
     //send email to user
-    sendEmailVerifyEmail(email,data);
+    await sendEmailVerifyEmail(email,data);
 
     return code;
 

@@ -18,6 +18,7 @@ import categoryRouter from "../module/category/category.route.js";
 import chatRouteRouter from "../module/chat/chat.routes.js";
 import notificationRouter from "../module/notification/notification.route.js";
 import dashboardRouter from "../module/dashboard/dashboard.route.js";
+import adminRouter from "../module/admin/admin.route.js";
 
 
 const allRouter = express.Router();
@@ -26,6 +27,10 @@ const moduleRoutes = [
     {
         path: "/auth",
         router: authRouter
+    },
+    {
+        path: "/admin",
+        router: adminRouter
     },
     {
         path: "/subscription",

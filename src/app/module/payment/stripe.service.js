@@ -140,6 +140,7 @@ const updatePaymentAndRelatedAndSendMail = async (webhookEventData) => {
 
     // send email to user
     const emailData = {
+      userRole: userRole.user.role,
       name: updatedUser.name,
       subscriptionPlan: updatedUser.subscriptionPlanType,
       price: payment.amount,
@@ -220,6 +221,7 @@ export const postCheckoutService = async (userData, payload) => {
 
     // send email to user
     const emailData = {
+      userRole: role,
       name: user.name,
       subscriptionPlan: "Free Plan",
       price: 0,
@@ -279,6 +281,7 @@ export const postCheckoutService = async (userData, payload) => {
 
     // send email to user
     const emailData = {
+      userRole: role,
       name: user.name,
       subscriptionPlan: "Free Plan",
       price: 0,
@@ -386,6 +389,7 @@ export const postCheckoutService = async (userData, payload) => {
 
     // send email to user
     const emailData = {
+      userRole: role,
       name: user.name,
       subscriptionPlan: subscriptionPlan.subscriptionPlanType,
       price: 0,
@@ -539,11 +543,13 @@ export const updateUserSubscriptionStatus = catchAsync(async () => {
   const subscriptionExpiredUsers = await UserModel.find({
     subscriptionPlan: { $ne: null},
     subscriptionEndDate: { $lt: new Date() },
-  }).select("name email subscriptionEndDate").lean();
+  }).select("name email role subscriptionPlanType subscriptionEndDate").lean();
 
   const emailOfExpiredUsers = subscriptionExpiredUsers.map((user) => ({
         name: user.name,
         email: user.email,
+        role: user.role,
+        subscriptionPlanType: user.subscriptionPlanType,
         subscriptionEndDate: user.subscriptionEndDate,
     }) 
   );
@@ -558,6 +564,8 @@ export const updateUserSubscriptionStatus = catchAsync(async () => {
 
       await sendSubscriptionExpiredEmail(user.email, {
         name: user.name,
+        userRole: user.role,
+        subscriptionPlanType: user.subscriptionPlanType,
         subscriptionEndDate: user.subscriptionEndDate
       });
       // console.log("email sent to", user.email);
@@ -647,7 +655,7 @@ export const subscriptionRemainderEmail = catchAsync(async () => {
     subscriptionEndDate: { $gte: startOfDay, $lte: endOfDay },
     // subscriptionReminderSent: { $ne: true },
   })
-    .select("_id name email subscriptionEndDate")
+    .select("_id name email role subscriptionPlanType subscriptionEndDate")
     .lean();
 
   if (!allUsers.length) {
@@ -658,6 +666,8 @@ export const subscriptionRemainderEmail = catchAsync(async () => {
   for (const user of allUsers) {
     await sendSubscriptionRemainderEmail(user.email, {
       name: user.name,
+      userRole: user.role,
+      subscriptionPlanType: user.subscriptionPlanType,
       subscriptionEndDate: user.subscriptionEndDate,
     });
 

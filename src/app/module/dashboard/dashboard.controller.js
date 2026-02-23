@@ -39,7 +39,7 @@ const sendNotificationToAllBuyerAndInvestor = async (title,country,businessType,
     
     //find out all buyer and investor who has subscription plan
     if(role === "Business Idea Lister"){
-        const users = await UserModel.find({role: "Investor",subscriptionPlanPrice: { $gte: 0 }}).select("name email").lean();
+        const users = await UserModel.find({role: "Investor",subscriptionPlanPrice: { $gt: 0 }}).select("name email").lean();
     
         //now send notification to all buyer and investor
         if(users.length > 0){
@@ -62,7 +62,7 @@ const sendNotificationToAllBuyerAndInvestor = async (title,country,businessType,
     }
     else {
 
-        const users = await UserModel.find({role: { $in: ["Buyer","Investor","Broker"]},subscriptionPlanPrice: { $gte: 0 }}).select("name email").lean();
+        const users = await UserModel.find({role: { $in: ["Buyer","Investor","Broker"]},subscriptionPlanPrice: { $gt: 0 }}).select("name email").lean();
     
         //now send notification to all buyer and investor
         if(users.length > 0){
@@ -140,14 +140,36 @@ export const getAllUsers = catchAsync( async (req,res) => {
     let { page,searchText } = req.query;
 
         if(searchText){
-            
+            // console.log("Searching users with text:", searchText);
             //$regex: searchTerm → Matches titles that contain the given term.
             //$options: "i" → Makes it case-insensitive (so "Coffee" matches "coffee").
             const response = await UserModel.aggregate([
-            // 1️⃣ Search by name (case-insensitive)
+            // 1️⃣ Search by name (case-insensitive), email (case-insensitive) or mobile (case-insensitive)
                 {
-                    $match: { name: { $regex: searchText, $options: "i" } }
+                    $match: {
+                        $or: [
+                            { name: { $regex: searchText, $options: "i" } },
+                            { email: { $regex: searchText, $options: "i" } },
+                            // { mobile: { $regex: searchText, $options: "i" } }
+                            {
+                                $expr: {
+                                    $regexMatch: {
+                                        input: { $toString: "$mobile" },
+                                        regex: searchText,
+                                        options: "i"
+                                    }
+                                }
+                            }
+                        ]
+                    }
                 },
+
+                // {
+                //     $match: {
+                //         name: { $regex: searchText, $options: "i" },
+                //     }
+                // },
+
 
                 // 2️⃣ Lookup subscription plan
                 {
@@ -172,7 +194,9 @@ export const getAllUsers = catchAsync( async (req,res) => {
                         country: 1,
                         role: 1,
                         isBlocked: 1,
-                        "subscriptionPlan.subscriptionPlanType": 1
+                        subscriptionPlan: 1,
+                        subscriptionPlanType: 1,
+                        // "subscriptionPlan.subscriptionPlanType": 1
                     }
                 },
 
@@ -184,7 +208,7 @@ export const getAllUsers = catchAsync( async (req,res) => {
                 // { $limit: limit }
             ]);
 
-
+            // console.log("Search result count:", response.length);
             sendResponse(res,{
                 statusCode: 200,
                 success: true,
@@ -192,7 +216,7 @@ export const getAllUsers = catchAsync( async (req,res) => {
                 data: response
             });
 
-            // return;
+            return;
 
         }
 

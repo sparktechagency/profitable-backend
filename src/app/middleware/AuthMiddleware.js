@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import config from "../../config/index.js";
 import ApiError from "../../error/ApiError.js";
 import { verifyToken } from "../../utils/jwtHelpers.js";
+import { ENUM_ADMIN_ROLE } from "../../helper/enum.js";
 
 
 export function authorizeUser(req, res, next) {
@@ -96,6 +97,90 @@ export const authorizeUserSocket = (socket, next) => {
     return next(new Error("Unauthorized: Invalid token"));
   }
 };
+
+// Role-based access control middleware
+export const auth =
+  (roles, isAccessible = true) =>
+  async (req, res, next) => {
+    try {
+      const tokenWithBearer = req.headers.authorization;
+
+      if (!tokenWithBearer && !isAccessible) return next();
+
+      if (!tokenWithBearer){
+
+        throw new ApiError(401, "You are not authorized for this role.");
+      }
+
+      if (tokenWithBearer.startsWith("Bearer")) {
+        const token = tokenWithBearer.split(" ")[1];
+
+        const verifyUser = verifyToken(token, config.jwt.secret);
+
+        req.user = verifyUser;
+        // console.log(verifyUser);
+
+        // const isExist = await Auth.findById(verifyUser?.authId);
+        if ( !Object.values(ENUM_ADMIN_ROLE).includes(verifyUser.role) ) {
+          throw new ApiError(401, "You are not authorized to perform this action.");
+        }
+
+        // console.log(roles.length);
+
+        if (roles.length && !roles.includes(verifyUser.role)){
+
+          throw new ApiError( 403, "Access Forbidden: You do not have permission to perform this action");
+        }
+
+        next();
+      }
+    } catch (error) {
+      next(error);
+    }
+  };
+
+// Permission-based access control middleware
+export const requirePermission = ( route ) => {
+  return ( req, res, next ) => {
+
+    const admin = req.user;
+
+    if (!admin) {
+      return next(new ApiError(401, "Unauthorized. Please log in."));
+    }
+
+    // Super admin bypass
+    if (admin.role === ENUM_ADMIN_ROLE.SUPER_ADMIN) {
+      return next();
+    }
+
+    if (!admin.permissions.includes(route)) {
+      return next(new ApiError(403, "Access Denied. You do not have the required permission."));
+    }
+
+    next();
+  };
+};
+
+
+// router.get(
+//   "/users",
+//   authMiddleware,
+//   requirePermission(ENUM_ADMIN_PERMISSION.USER),
+//   UserController.getAllUsers
+// );
+
+// router.get(
+//   "/listings",
+//   authMiddleware,
+//   requirePermission(ENUM_ADMIN_PERMISSION.LISTING),
+//   ListingController.getAllListings
+// );
+
+
+
+
+
 
 
 

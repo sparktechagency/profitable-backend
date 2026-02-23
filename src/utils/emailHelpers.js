@@ -21,6 +21,7 @@ import adminNdaEmailTemp from "../mail/adminNdaEmailTemp.js";
 import userNdaEmailTemp from "../mail/userNdaEmailTemp.js";
 import investorEnquiryEmailTemp from "../mail/investorEnquiryEmailTemp.js";
 import subscriptionRemainderTemp from "../mail/subscriptionRemainderTemp.js";
+import sellerViewEmail from "../mail/sellerViewEmailTemp.js";
 
 
 
@@ -108,7 +109,7 @@ export const sendSubscriptionEmail = async (email, data) => {
   try {
     await sendEmail({
       email,
-      subject: "Subscription Activated - Welcome To PBFS",
+      subject: `${data.userRole} ${data.subscriptionPlan} Subscription Activated  - Welcome To PBFS`,
       html: subscriptionEmailTemp(data),
     });
   } catch (error) {
@@ -121,7 +122,7 @@ export const sendSubscriptionExpiredEmail = async (email, data) => {
   try {
     await sendEmail({
       email,
-      subject: "Your PBFS subscription has Expired!",
+      subject: `Your PBFS ${data.userRole} ${data.subscriptionPlanType} subscription has Expired!`,
       html: subscriptionExpiredTemp(data),
     });
   } catch (error) {
@@ -134,7 +135,7 @@ export const sendSubscriptionRemainderEmail = async (email, data) => {
   try {
     await sendEmail({
       email,
-      subject: "Your PBFS subscription plan is about to Expire!",
+      subject: `Your PBFS ${data.userRole} ${data.subscriptionPlanType} subscription is about to Expire!`,
       html: subscriptionRemainderTemp(data),
     });
   } catch (error) {
@@ -280,6 +281,19 @@ export const sendNdaEmailToUser = async (email,data) => {
           contentType: "application/pdf",
         },
       ],
+    });
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(status.INTERNAL_SERVER_ERROR, error.message);
+  }
+};
+
+export const sendSellerBusinessViewEmail = async (email,data) => {
+  try {
+    await sendEmail({
+      email,
+      subject: "Your Contact Details Were Viewed by a Buyer on ProfitableBusinessesForSale.com.",
+      html: sellerViewEmail(data)
     });
   } catch (error) {
     console.log(error);
