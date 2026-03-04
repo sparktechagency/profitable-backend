@@ -177,6 +177,47 @@ export const requirePermission = ( route ) => {
 //   ListingController.getAllListings
 // );
 
+export const checkAdminPermission = (module, action) => {
+  return async (req, res, next) => {
+    try {
+      const admin = req.admin; // assuming admin is attached after auth middleware
+
+      if (!admin) {
+        return res.status(401).json({
+          success: false,
+          message: "Unauthorized access",
+        });
+      }
+
+      const hasPermission =
+        admin.permissions?.[module]?.[action];
+
+      if (!hasPermission) {
+        return res.status(403).json({
+          success: false,
+          message: "You do not have permission to perform this action",
+        });
+      }
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+  };
+};
+
+/*
+checkAdminPermission("user", "deleteUser")
+checkAdminPermission("listing", "approveListing")
+
+router.delete(
+  "/delete-user/:id",
+  adminAuthMiddleware,
+  checkAdminPermission("user", "deleteUser"),
+  deleteUserController
+);
+*/
+
 
 
 

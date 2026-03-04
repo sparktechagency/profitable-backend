@@ -75,7 +75,7 @@ export const sellerDetailService = async (req) => {
     let userDetails;
     if(!buyer) throw new ApiError(404, "User subscription plan not found");
 
-    if(buyer.subscriptionPlan && buyer.subscriptionPlanType === "15 Days"){
+    if(buyer.subscriptionPlan && !buyer.subscriptionPlanPrice){
 
         throw new ApiError(400, "Free Plan user cant see Seller's details. Please upgrade your subscription plan to view seller details.");
     }

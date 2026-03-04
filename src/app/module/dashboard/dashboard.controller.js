@@ -1,13 +1,13 @@
+import mongoose from "mongoose";
 import catchAsync from "../../../utils/catchAsync.js";
 import sendResponse from "../../../utils/sendResponse.js";
 import UserModel from "../user/user.model.js";
 import BusinessModel from "../business/business.model.js";
 import CategoryModel from "../category/category.model.js";
 import ApiError from "../../../error/ApiError.js";
-import mongoose from "mongoose";
 import validateFields from "../../../utils/validateFields.js";
 import postNotification from "../../../utils/postNotification.js";
-import { sendListingConfirmationEmail, sendRejectionEmail,newBusinessListingEmail } from "../../../utils/emailHelpers.js";
+import { sendListingConfirmationEmail, sendRejectionEmail,newBusinessListingEmail, sendDeleteListingEmail } from "../../../utils/emailHelpers.js";
 import InterestedModel from "../interested/interested.model.js";
 
 //utility function 
@@ -463,7 +463,7 @@ export const allListedBusiness = catchAsync( async (req,res) => {
             filter = {isApproved: true}; // optional fallback
     }
 
-    const business = await BusinessModel.find(filter).populate({path: "user", select:"name email image"}).sort({ createdAt: -1 }).skip(skip).limit(limit);
+    const business = await BusinessModel.find(filter).populate({path: "user", select:"name email image buyerViewCount"}).sort({ createdAt: -1 }).skip(skip).limit(limit);
 
     const total = await BusinessModel.countDocuments(filter);
     const totalPage = Math.ceil(total / limit);
@@ -520,6 +520,127 @@ export const approveBusinessController = catchAsync( async (req,res) => {
         data: business
     });
 });
+
+//api ending point to delete business
+export const deleteBusinessController = catchAsync(async (req, res) => {
+
+  const { businessId } = req.query;
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+
+    // 1️⃣ Delete business
+    const business = await BusinessModel.findByIdAndDelete(
+      businessId,
+      { session }
+    );
+
+    if (!business) {
+      throw new ApiError(404, "Business not found to delete.");
+    }
+
+    // 2️⃣ Update user's totalBusiness
+    const user = await UserModel.findById(business.user).session(session);
+
+    if (user) {
+      user.totalBusiness = Math.max(0, user.totalBusiness - 1);
+      await user.save({ session });
+    }
+
+    // 3️⃣ Delete related interested documents
+    await InterestedModel.deleteMany(
+      { businessId: businessId },
+      { session }
+    );
+
+    // 4️⃣ Commit transaction
+    await session.commitTransaction();
+    session.endSession();
+
+    // 5️⃣ Send email AFTER successful commit
+    if (user) {
+      await sendDeleteListingEmail(user.email, {
+        name: user.name,
+        title: business.title,
+        location: business.countryName,
+        Date: business.createdAt
+      });
+    }
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Business deleted successfully",
+      data: business
+    });
+
+  } catch (error) {
+
+    // 🔥 Rollback on error
+    await session.abortTransaction();
+    session.endSession();
+
+    throw error;
+  }
+});
+
+//add metadata in response of all listed business api
+export const addMetaTag = catchAsync(async (req, res) => {
+
+  const { businessId } = req.query;
+
+  const {  metaTitle,metaDescription,metaKeywords } = req.body;
+
+    // ✅ Parse metaKeywords properly
+    if(metaKeywords && typeof metaKeywords === "string"){
+    // if (typeof metaKeywords === "string") {
+        try {
+            const parsed = JSON.parse(metaKeywords);
+
+            // If parsed is an array, use it. Otherwise, convert CSV string to array.
+            if (Array.isArray(parsed)) {
+                metaKeywords = parsed.map((k) => k.trim());
+            } else {
+                metaKeywords = metaKeywords.split(",").map((k) => k.trim());
+            }
+        } catch (err) {
+            // fallback if JSON.parse fails
+            metaKeywords = metaKeywords.split(",").map((k) => k.trim());
+        }
+    }
+
+    const updatedBusiness = await BusinessModel.findByIdAndUpdate(
+        businessId,
+        {
+            $set: {
+                metaTitle,
+                metaDescription,
+                metaKeywords
+            },
+        },
+        {
+            new: true,
+            runValidators: true,
+        }
+    );
+
+
+    if(!updatedBusiness){
+        throw new ApiError(500, "Failed to add metadata to a business.");
+    }
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Business metadata added successfully",
+      data: updatedBusiness
+    });
+
+  
+});
+
 
 //api ending point to change password
 export const changePasswodController = catchAsync( async (req,res) => {

@@ -1,6 +1,6 @@
 import catchAsync from "../../../utils/catchAsync.js";
 import sendResponse from "../../../utils/sendResponse.js";
-import { adminLoginService, adminResetPasswordService, adminSendOtpService, adminVerifyOtpService, blockUnblockAdminService, createAdminService, deleteAdminService, getAdminByIdService, getAllAdminService, updateAdminService } from "./admin.service";
+import { adminChangePasswordService, adminLoginService, adminResetPasswordService, adminSendOtpService, adminVerifyOtpService, blockUnblockAdminService, createAdminService, deleteAdminService, editAdminDetailService, getAdminByIdService, getAdminDetailsService, getAllAdminService, updateAdminService } from "./admin.service.js";
 
 
 
@@ -127,6 +127,45 @@ export const deleteAdmin = catchAsync(async (req, res) => {
         statusCode: 200,
         success: true,
         message: "Admin deleted successfully.",
+        data: response
+    });
+});
+
+export const getAdminDetails = catchAsync(async (req, res) => {
+
+    const response = await getAdminDetailsService(req.user);
+
+    //send response
+    sendResponse(res,{
+        statusCode: 200,
+        success: true,
+        message: "Admin details retrieved successfully.",
+        data: response
+    });
+});
+
+export const editAdminDetails = catchAsync(async (req, res) => {
+
+    const response = await editAdminDetailService(req);
+
+    //send response
+    sendResponse(res,{
+        statusCode: 200,
+        success: true,
+        message: "Admin details updated successfully.",
+        data: response
+    });
+});
+
+export const adminChangePassword = catchAsync(async (req, res) => {
+
+    const response = await adminChangePasswordService(req.body, req.user);
+
+    //send response
+    sendResponse(res,{
+        statusCode: 200,
+        success: true,
+        message: "Admin password changed successfully.",
         data: response
     });
 });

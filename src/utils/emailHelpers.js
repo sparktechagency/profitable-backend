@@ -22,6 +22,7 @@ import userNdaEmailTemp from "../mail/userNdaEmailTemp.js";
 import investorEnquiryEmailTemp from "../mail/investorEnquiryEmailTemp.js";
 import subscriptionRemainderTemp from "../mail/subscriptionRemainderTemp.js";
 import sellerViewEmail from "../mail/sellerViewEmailTemp.js";
+import listingDeletionEmailTemp from "../mail/deleteListingEmailTemp.js";
 
 
 
@@ -292,8 +293,21 @@ export const sendSellerBusinessViewEmail = async (email,data) => {
   try {
     await sendEmail({
       email,
-      subject: "Your Contact Details Were Viewed by a Buyer on ProfitableBusinessesForSale.com.",
+      subject: "Your contact details were viewed by a Buyer on ProfitableBusinessesForSale.com.",
       html: sellerViewEmail(data)
+    });
+  } catch (error) {
+    console.log(error);
+    throw new ApiError(status.INTERNAL_SERVER_ERROR, error.message);
+  }
+};
+
+export const sendDeleteListingEmail = async (email,data) => {
+  try {
+    await sendEmail({
+      email,
+      subject: "Your listing has been deleted - PBFS ",
+      html: listingDeletionEmailTemp(data)
     });
   } catch (error) {
     console.log(error);

@@ -257,7 +257,7 @@ export const updateABusinessService = async (req) => {
     }
 
     //destructure property
-    const { title,category, subCategory, country, state, city, countryName, askingPrice, price, ownerShipType, businessType, reason, description, metaTitle,metaDescription,metaKeywords } = req.body;
+    let { title,category, subCategory, country, state, city, countryName, askingPrice, price, ownerShipType, businessType, reason, description } = req.body;
     // console.log(req.body);
     let updatedImage;
     // Step 2: Add new image
@@ -276,24 +276,6 @@ export const updateABusinessService = async (req) => {
     // const updatedBusiness = await BusinessModel.findByIdAndUpdate(businessId,{
     //     image: updatedImage,title,category,subCategory, country, state, city, countryName, askingPrice, price, ownerShipType, businessType, reason, description, isApproved: false
     // },{ new: true });
-
-    // ✅ Parse metaKeywords properly
-    if(metaKeywords && typeof metaKeywords === "string"){
-    // if (typeof metaKeywords === "string") {
-        try {
-            const parsed = JSON.parse(metaKeywords);
-
-            // If parsed is an array, use it. Otherwise, convert CSV string to array.
-            if (Array.isArray(parsed)) {
-                metaKeywords = parsed.map((k) => k.trim());
-            } else {
-                metaKeywords = metaKeywords.split(",").map((k) => k.trim());
-            }
-        } catch (err) {
-            // fallback if JSON.parse fails
-            metaKeywords = metaKeywords.split(",").map((k) => k.trim());
-        }
-    }
 
     const updatedBusiness = await BusinessModel.findByIdAndUpdate(
         businessId,
@@ -314,9 +296,6 @@ export const updateABusinessService = async (req) => {
                 reason,
                 description,
                 isApproved: false,
-                metaTitle,
-                metaDescription,
-                metaKeywords
             },
         },
         {
@@ -327,7 +306,7 @@ export const updateABusinessService = async (req) => {
 
 
     if(!updatedBusiness){
-        throw new ApiError(500, "Failed to update a business");
+        throw new ApiError(500, "Failed to update a business.");
     }
 
     //Step 2: Remove old images from filesystem
@@ -385,7 +364,7 @@ export const getASingleBusinessByIdWithUsersService = async (query) => {
     //      })
     // ]);
 
-    const business = await BusinessModel.findOne({slug: slug});
+    const business = await BusinessModel.findOne({slug: slug}).populate({path: "user", select:"name buyerViewCount"});
 
     if(!business){
         throw new ApiError(500, "No business details found");

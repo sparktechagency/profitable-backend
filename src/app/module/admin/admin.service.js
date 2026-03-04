@@ -1,15 +1,17 @@
 import codeGenerator from "../../../utils/codeGenerator.js";
 import validateFields from "../../../utils/validateFields.js";
 import AdminModel from "./admin.model.js";
-
-
-
+import { createToken } from "../../../utils/jwtHelpers.js";
+import config from "../../../config/index.js";
+import ApiError from "../../../error/ApiError.js";
+import { sendEmailVerifyEmail } from "../../../utils/emailHelpers.js";
 
 
 export const createAdminService = async (payload) => {
     const {name,email,password,role,permissions} = payload;
 
-    const existingAdmin = await AdminModel.findOne({ email: payload.email.toLowerCase() });
+    const existingAdmin = await AdminModel.findOne({ email: email.toLowerCase() });
+
     if (existingAdmin) {
       throw new ApiError(400, "Admin with this email already exists");
     }
@@ -60,7 +62,7 @@ export const updateAdminService = async (adminId, payload) => {
 export const adminLoginService = async (payload) => {
     const {email,password} = payload;
 
-    const admin = await AdminModel.findOne({ email });
+    const admin = await AdminModel.findOne({ email: email.toLowerCase() }).lean();
     if (!admin) {
       throw new ApiError(404, "Admin not found.");
     }
@@ -155,7 +157,7 @@ export const adminVerifyOtpService = async (payload) => {
     const user = await AdminModel.findOne({email: email.toLowerCase()}).lean();
     // console.log(user);
     if(!user){
-         throw new ApiError(404, "Admin not found");
+         throw new ApiError(404, "Admin not found to verify otp code.");
     }
 
     //check if verification code is avsilable with user not
@@ -171,7 +173,7 @@ export const adminVerifyOtpService = async (payload) => {
     //update user after matching code;
     const verifiedUser = await AdminModel.findOneAndUpdate({email: email.toLowerCase()},{
          verificationCode: ""
-        },{new: true}).select('name email isEmailVerified');
+        },{new: true}).select('name email role permissions verificationCode').lean();
 
     // //generate token
     // const tokenPayload = {
@@ -255,3 +257,79 @@ export const deleteAdminService = async (adminId) => {
     
     return null;
 }
+
+export const getAdminDetailsService = async (adminDetails) => {
+    const {id} = adminDetails;
+
+    const admin = await AdminModel.findById(id).select("-password").lean();
+
+    if (!admin) {
+      throw new ApiError(404, "Admin not found.");
+    }
+
+    return admin;
+}
+
+export const editAdminDetailService = async (req) => {
+    const {name} = req.body;
+    const {id} = req.user;
+
+    let image;
+    if(req.file){
+         image = req.file.filename;
+    }
+
+    const admin = await AdminModel.findById(id);
+
+    if (!admin) {
+      throw new ApiError(404, "Admin not found.");
+    }
+    
+    // Update admin fields if they are provided in payload
+    if (name) admin.name = name;
+    if(image) admin.image = image;
+    // if (password) admin.password = password;
+    // if (role) admin.role = role;
+    // if (permissions) admin.permissions = permissions;
+
+    await admin.save();
+    return {
+        admin: {
+            id: admin._id,
+            name: admin.name,
+            email: admin.email,
+            // role: admin.role,
+            // permissions: admin.permissions
+        }
+    };
+}
+
+export const adminChangePasswordService = async (payload, adminDetails) => {
+    const {email, currentPassword, newPassword, confirmPassword} = payload;
+
+    //check password length
+    if(newPassword.length < 5){
+        throw new ApiError(400,"Password should be at least 5 character.");
+    }
+    //check if both password fields matched or not
+    if (newPassword !== confirmPassword){
+        throw new ApiError(400, "New password and confirm password do not match.")
+    }
+
+    const admin = await AdminModel.findOne({email: email.toLowerCase()});
+
+    if (!admin) {
+      throw new ApiError(404, "Admin not found to change password.");
+    }
+
+    if (admin.password !== currentPassword) {
+      throw new ApiError(401, "Current password is incorrect.");
+    }
+
+    //now change password in Database
+    admin.password = newPassword;
+    await admin.save();
+
+    return null;
+}
+
