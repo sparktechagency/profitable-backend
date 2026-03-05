@@ -1,11 +1,11 @@
-import {Router} from "express";
+import express from "express";
 import { adminChangePassword, adminLogin, adminResetPassword, adminSentOtp, adminVerifyOtp, blockAdmin, createNewAdmin, deleteAdmin, editAdmin, editAdminDetails, getAdminDetails, getAllAdmin, getSingleAdmin } from "./admin.controller.js"; 
 import { auth } from "../../middleware/AuthMiddleware.js";
 import { ENUM_ADMIN_ROLE } from "../../../helper/enum.js";
 import multer from "multer";
 import path from "path";
 
-const adminRouter = Router();
+const adminRouter = express.Router();
 
 
 //define the storage
