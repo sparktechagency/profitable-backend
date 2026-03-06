@@ -196,6 +196,7 @@ export const getAllUsers = catchAsync( async (req,res) => {
                         isBlocked: 1,
                         subscriptionPlan: 1,
                         subscriptionPlanType: 1,
+                        subscriptionStartDate: 1,
                         // "subscriptionPlan.subscriptionPlanType": 1
                     }
                 },
@@ -225,7 +226,7 @@ export const getAllUsers = catchAsync( async (req,res) => {
 
     const skip = (page - 1) * limit;
    
-    let users = await UserModel.find({role: {$ne: "Admin"}}).select('name email image mobile country role isBlocked subscriptionPlan subscriptionPlanType').sort({createdAt: -1}).skip(skip).limit(limit);
+    let users = await UserModel.find({role: {$ne: "Admin"}}).select('name email image mobile country role isBlocked subscriptionPlan subscriptionPlanType subscriptionStartDate').sort({createdAt: -1}).skip(skip).limit(limit);
 
 
     // if(!users) throw new ApiError(500, "No user found. Server Error");
@@ -463,7 +464,7 @@ export const allListedBusiness = catchAsync( async (req,res) => {
             filter = {isApproved: true}; // optional fallback
     }
 
-    const business = await BusinessModel.find(filter).populate({path: "user", select:"name email image buyerViewCount"}).sort({ createdAt: -1 }).skip(skip).limit(limit);
+    const business = await BusinessModel.find(filter).populate({path: "user", select:"name email image buyerViewCount subscriptionStartDate"}).sort({ createdAt: -1 }).skip(skip).limit(limit);
 
     const total = await BusinessModel.countDocuments(filter);
     const totalPage = Math.ceil(total / limit);

@@ -12,6 +12,7 @@ import postNotification from "../../../utils/postNotification.js";
 import QueryBuilder from "../../../builder/queryBuilder.js";
 import deleteFile from "../../../utils/deleteUnlinkFile.js";
 import { newBusinessListingEmail,businessValuationReturnEmail, sendAdminEmail } from "../../../utils/emailHelpers.js";
+import { ENUM_ADMIN_ROLE } from "../../../helper/enum.js";
 
 
 
@@ -248,11 +249,11 @@ export const updateABusinessService = async (req) => {
         throw new ApiError(400, "BusinessId and userId is required to update a business");
     }
 
-    //if user role is Admin then he can update all listed business
-    if(role !== "Admin"){
-        //check if user can update or not
-        if(userId !== user){
-            throw new ApiError(403,"You can't update this business.");
+    const adminRoles = [ENUM_ADMIN_ROLE.SUPER_ADMIN, ENUM_ADMIN_ROLE.ADMIN];
+
+    if (!adminRoles.includes(role)) {
+        if (userId !== user) {
+            throw new ApiError(403, "You can't update this business.");
         }
     }
 

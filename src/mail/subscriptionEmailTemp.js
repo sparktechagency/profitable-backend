@@ -72,7 +72,7 @@ const subscriptionEmailTemp = (data) =>
           <p>Hello, ${data.name}</p>
           <p>Thank you for subscribing to ProfitableBusinessesForSale.com! <br> 
             Your subscription plan has been successfully activated. </p>
-          <h3>Plan : ${data.subscriptionPlan}</h3>
+          <h3>Plan : ${data.subscriptionPlan === "1 Months" ? "1 Month" : data.subscriptionPlan}</h3>
           <h3>Price : $ ${data.price}</h3>
 
           <h3>Start Date: ${new Date(data.startDate).toLocaleDateString('en-GB')}</h3>

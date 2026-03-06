@@ -110,7 +110,7 @@ export const sendSubscriptionEmail = async (email, data) => {
   try {
     await sendEmail({
       email,
-      subject: `${data.userRole} ${data.subscriptionPlan} Subscription Activated  - Welcome To PBFS`,
+      subject: `${data.userRole} ${data.subscriptionPlan === "1 Months" ? "1 Month" : data.subscriptionPlan} Subscription Activated  - Welcome To PBFS`,
       html: subscriptionEmailTemp(data),
     });
   } catch (error) {
@@ -123,7 +123,7 @@ export const sendSubscriptionExpiredEmail = async (email, data) => {
   try {
     await sendEmail({
       email,
-      subject: `Your PBFS ${data.userRole} ${data.subscriptionPlanType} subscription has Expired!`,
+      subject: `Your PBFS ${data.userRole} ${data.subscriptionPlanType === "1 Months" ? "1 Month" : data.subscriptionPlanType} subscription has Expired!`,
       html: subscriptionExpiredTemp(data),
     });
   } catch (error) {
@@ -136,7 +136,7 @@ export const sendSubscriptionRemainderEmail = async (email, data) => {
   try {
     await sendEmail({
       email,
-      subject: `Your PBFS ${data.userRole} ${data.subscriptionPlanType} subscription is about to Expire!`,
+      subject: `Your PBFS ${data.userRole} ${data.subscriptionPlanType === "1 Months" ? "1 Month" : data.subscriptionPlanType} subscription is about to Expire!`,
       html: subscriptionRemainderTemp(data),
     });
   } catch (error) {
