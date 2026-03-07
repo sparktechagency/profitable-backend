@@ -97,10 +97,10 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: null
     },
-    buyerViewCount: {
-        type: Number,
-        default: 0
-    }
+    // buyerViewCount: {
+    //     type: Number,
+    //     default: 0
+    // }
 },{
     timestamps: true
 });

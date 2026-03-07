@@ -83,7 +83,7 @@ const sellerViewEmail = (data) =>
                 <p>
                     <strong>Buyer Name:</strong> ${data.buyerName}<br>
                     <strong>Buyer Email:</strong> ${data.buyerEmail}<br>
-                    <strong>Buyer Mobile:</strong> ${data.buyerMobile}}
+                    <strong>Buyer Mobile:</strong> ${data.buyerMobile}
                 </p>` : `<p>To view the buyer's contact details, please upgrade to our premium subscription plan. <a href="https://profitablebusinessesforsale.com/pricing">Click here to upgrade now.</a></p>`
         }
 

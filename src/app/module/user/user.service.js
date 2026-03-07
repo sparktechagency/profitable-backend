@@ -2,6 +2,7 @@ import ApiError from "../../../error/ApiError.js";
 import UserModel from "./user.model.js";
 import deleteFile from "../../../utils/deleteUnlinkFile.js";
 import { sendSellerBusinessViewEmail } from "../../../utils/emailHelpers.js";
+import BusinessModel from "../business/business.model.js";
 
 //user details service
 export const getUserDetailsService = async (user) => {
@@ -60,7 +61,7 @@ export const userProfileUpdateService = async (req) => {
 //get seller detail
 export const sellerDetailService = async (req) => {
     const buyerId = req.user.userId;
-    const {userId, businessName} = req.query;
+    const {userId, businessId} = req.query;
     // console.log(userId);
     if(!userId || !buyerId){
         throw new ApiError(400, "UserId and buyerId required to get seller details.");
@@ -69,10 +70,10 @@ export const sellerDetailService = async (req) => {
     
 
     //check buyer's subscription plan
-    const buyer = await UserModel.findById(buyerId).select('name email mobile subscriptionPlan subscriptionPlanType subscriptionPlanPrice');
+    const buyer = await UserModel.findById(buyerId).select('name email mobile subscriptionPlan subscriptionPlanType subscriptionPlanPrice').lean();
     console.log(buyer);
     
-    let userDetails;
+    // let userDetails;
     if(!buyer) throw new ApiError(404, "User subscription plan not found");
 
     if(buyer.subscriptionPlan && !buyer.subscriptionPlanPrice){
@@ -82,22 +83,27 @@ export const sellerDetailService = async (req) => {
     
     else if(buyer.subscriptionPlan && buyer.subscriptionPlanPrice > 0){
         // console.log("enters");
-         userDetails = await UserModel.findById(userId).select("name email image country mobile role subscriptionPlanPrice buyerViewCount");
+        let [userDetails,business] = await Promise.all([
+
+            await UserModel.findById(userId).select("name email image country mobile role subscriptionPlanPrice").lean(),
+            await BusinessModel.findById(businessId).select("title slug businessRole buyerViewCount")
+        ]);
+
         // console.log(userDetails);
 
         //count seller details view by buyer and save in db
-        userDetails.buyerViewCount = userDetails.buyerViewCount + 1;
-        await userDetails.save();
+        business.buyerViewCount = business.buyerViewCount + 1;
+        await business.save();
         
-        if(!userDetails){
-            throw new ApiError(404, "user details not found");
+        if(!userDetails || !business){
+            throw new ApiError(404, "User details and business details not found.");
         }
         // console.log(userDetails);
 
         //send email to seller when buyer views seller details
         await sendSellerBusinessViewEmail(userDetails.email, {
             name: userDetails.name,
-            businessName: businessName,
+            businessName: business.title,
             buyerName: buyer.name,
             buyerEmail: buyer.email,
             buyerMobile: buyer.mobile,

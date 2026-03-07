@@ -87,7 +87,7 @@ export const createNewBusinessService = async (req) => {
          "title", "category", "country", "askingPrice", "ownerShipType", "businessType"
     ]);
     
-    console.log(country,state,city,countryName);
+    // console.log(country,state,city,countryName);
 
     //user type and subscription wise different add business functionlity
     const user = await UserModel.findById(userId);
@@ -102,7 +102,7 @@ export const createNewBusinessService = async (req) => {
          newBusiness = await BusinessModel.create({
             user: userId,image: images, title, businessRole: role, category, subCategory, country, state, city,countryName, askingPrice,price, ownerShipType, businessType, reason, description
         });
-
+        // console.log(newBusiness);
         //check if business is created or not
         if(!newBusiness){
             throw new ApiError(500,"failed to create new business");
@@ -365,7 +365,7 @@ export const getASingleBusinessByIdWithUsersService = async (query) => {
     //      })
     // ]);
 
-    const business = await BusinessModel.findOne({slug: slug}).populate({path: "user", select:"name buyerViewCount"});
+    const business = await BusinessModel.findOne({slug: slug}).populate({path: "user", select:"name "});
 
     if(!business){
         throw new ApiError(500, "No business details found");

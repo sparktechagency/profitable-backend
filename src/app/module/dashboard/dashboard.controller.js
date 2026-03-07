@@ -464,7 +464,7 @@ export const allListedBusiness = catchAsync( async (req,res) => {
             filter = {isApproved: true}; // optional fallback
     }
 
-    const business = await BusinessModel.find(filter).populate({path: "user", select:"name email image buyerViewCount subscriptionStartDate"}).sort({ createdAt: -1 }).skip(skip).limit(limit);
+    const business = await BusinessModel.find(filter).populate({path: "user", select:"name email image subscriptionStartDate"}).sort({ createdAt: -1 }).skip(skip).limit(limit).lean();
 
     const total = await BusinessModel.countDocuments(filter);
     const totalPage = Math.ceil(total / limit);
