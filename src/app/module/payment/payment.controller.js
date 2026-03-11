@@ -42,7 +42,8 @@ export const webhookManager = catchAsync(async (req, res) => {
 //api ending point to get all paid payment
 export const getAllPaidPayment = catchAsync(
   async (req,res) => {
-    let { page } = req.query;
+    let { page, searchText } = req.query;
+
 
     page = parseInt(page) || 1;
     // default page = 1
@@ -110,7 +111,66 @@ export const getAllPaidPayment = catchAsync(
     });
 
     // console.log(formattedResult);
+    //payment search by name
+    if(searchText){
+      console.log(searchText);
+      const searchResult = await PaymentModel.aggregate([
 
+        // 1️⃣ Lookup user details
+        {
+          $lookup: {
+            from: "users",
+            localField: "user",
+            foreignField: "_id",
+            as: "user"
+          }
+        },
+
+        // 2️⃣ Convert array to object
+        {
+          $unwind: "$user"
+        },
+
+        // 3️⃣ Search by user name
+        {
+          $match: {
+            "user.name": {
+              $regex: searchText,
+              $options: "i"
+            }
+          }
+        },
+
+        // 4️⃣ Select required fields
+        {
+          $project: {
+            amount: 1,
+            status: 1,
+            createdAt: 1,
+            payment_intent_id: 1,
+            "user._id": 1,
+            "user.name": 1,
+            "user.email": 1
+          }
+        },
+
+        // 5️⃣ Sort latest payment first
+        {
+          $sort: { createdAt: -1 }
+        }
+
+      ]);
+      // console.log(result);
+
+      return sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Search results for paid payments",
+        data: {totalEarnings: result[0].totalAmount, monthWiseEarnings: formattedResult, allPayment: searchResult }
+      });
+    }
+
+    //all payment
     const response = await PaymentModel.find({ status: "Paid"}).populate({
         path: "user", select: "-_id name email"
     }).select("amount status createdAt payment_intent_id").skip(skip).limit(limit).sort({createdAt: -1});

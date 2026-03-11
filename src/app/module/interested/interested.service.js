@@ -39,7 +39,11 @@ export const makeAnUserInterestedService = async (req) => {
         throw new ApiError(500,"Failed to create new user interested to this Business");
     }
 
-    const seller = await BusinessModel.findById(businessId).populate({path: "user", select:"name email role subscriptionPlan subscriptionPlanPrice"}).select("title businessRole");
+    const seller = await BusinessModel.findById(businessId).populate({path: "user", select:"name email role subscriptionPlan subscriptionPlanPrice"}).select("title businessRole totalInterest");
+    
+    seller.totalInterest = seller.totalInterest + 1;
+    //increment total interest by 1
+    await seller.save();
 
     //send separate email to idea lister
     if(role === "Investor" && seller.businessRole === "Business Idea Lister"){

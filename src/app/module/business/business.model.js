@@ -94,6 +94,10 @@ const businessSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    totalInterest: {
+        type: Number,
+        default: 0
+    },
     metaTitle: {
       type: String,
       trim: true,
