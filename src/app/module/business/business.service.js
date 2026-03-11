@@ -760,7 +760,7 @@ export const businessIdeaByMostViewService = async (query) => {
 
     if (query.country) { filter.country = query.country } 
 
-    const business = await BusinessModel.find(filter).sort( { views: -1 } );
+    const business = await BusinessModel.find(filter).sort( { createdAt: -1} );
 
     if(!business) throw new ApiError(404, "No data found");
             
@@ -934,6 +934,7 @@ export const featuredBusinessService = async (params,query) => {
                 country: 1,
                 location: 1,
                 askingPrice: 1,
+                price: 1,
                 businessRole: 1,
                 createdAt: 1,
                 slug: 1,
